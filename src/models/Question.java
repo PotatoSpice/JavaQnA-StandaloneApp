@@ -38,9 +38,8 @@ public abstract class Question implements interfaces.models.IQuestion {
 
     @Override
     public void setTitle(String title) throws QuestionException {
-        if (done) {
-            throw new QuestionException("Questão já foi respondida! "
-                    + "Impossível alterar o título.");
+        if (title == null) {
+            throw new QuestionException();
         }
         this.title = title;
     }
@@ -52,9 +51,8 @@ public abstract class Question implements interfaces.models.IQuestion {
 
     @Override
     public void setQuestion_description(String description) throws QuestionException {
-        if (done) {
-            throw new QuestionException("Questão já foi respondida! "
-                    + "Impossivel alterar a descrição.");
+        if (description == null) {
+            throw new QuestionException();
         }
         this.question_description = description;
     }
