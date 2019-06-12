@@ -13,7 +13,6 @@ import com.google.gson.Gson;
 import interfaces.controller.ITestStatistics;
 import interfaces.exceptions.TestException;
 import interfaces.models.IQuestion;
-import models.Question;
 
 /**
  * <b>Esta classe implementa todos os métodos definidos no contrato relativo,
@@ -24,8 +23,8 @@ import models.Question;
  */
 public class Test implements interfaces.controller.ITest {
 
-    private Question[] questions;
-    private int data_size = 50;
+    private final IQuestion[] questions;
+    private final int DEFAULT_SIZE = 50;
     private TestStatistics statistics = null;
 
     /**
@@ -33,7 +32,7 @@ public class Test implements interfaces.controller.ITest {
      * por defeito.
      */
     public Test() {
-        this.questions = new Question[this.data_size];
+        this.questions = new IQuestion[this.DEFAULT_SIZE];
     }
 
     @Override
@@ -48,7 +47,7 @@ public class Test implements interfaces.controller.ITest {
         { // Iterar sobre a estrutura de dados
             if (questions[pos] == null)
             { // Insere o objeto quando encontrar uma posição vazia
-                questions[pos] = (Question) q;
+                questions[pos] = (IQuestion) q;
                 return true;
             }
             pos++;
@@ -93,7 +92,7 @@ public class Test implements interfaces.controller.ITest {
     @Override
     public int numberQuestions() {
         int count = 0;
-        for (Question q : questions)
+        for (IQuestion q : questions)
         { // Itera sobre toda a estutura de dados
             if (q != null)
             { // Incrementa o contador de cada vez que encontra uma questão
@@ -109,7 +108,7 @@ public class Test implements interfaces.controller.ITest {
         { // Se não existirem questões, retorna falso
             return false;
         }
-        for (Question q : questions)
+        for (IQuestion q : questions)
         { // Itera sobre a estrutura de dados até que a condição se realize
             if (!q.isDone())
             { // Ao encontrar uma única questão incompleta, retorna falso
@@ -127,14 +126,14 @@ public class Test implements interfaces.controller.ITest {
     @Override
     public boolean loadFromJSONFile(String path) throws TestException {
         Gson gson = new Gson();
-        Question[] fileQuestions = gson.fromJson(path, Question[].class);
+        IQuestion[] fileQuestions = gson.fromJson(path, IQuestion[].class);
 
         if (fileQuestions.length == 0)
         { // Se não existirem questões, retorna falso
             return false;
         }
 
-        for (Question q : fileQuestions)
+        for (IQuestion q : fileQuestions)
         { // Iterar sobre o novo vetor criado a partir do ficheiro JSON
             /*
             Nota: como o método 'addQuestion()' já faz o lançamento da exceção
