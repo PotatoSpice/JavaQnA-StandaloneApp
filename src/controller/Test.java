@@ -4,7 +4,7 @@ import interfaces.controller.ITestStatistics;
 import interfaces.exceptions.TestException;
 import interfaces.models.IQuestion;
 
-public class ITest implements interfaces.controller.ITest {
+public class Test implements interfaces.controller.ITest {
 
     @Override
     public boolean addQuestion(IQuestion var1) throws TestException {

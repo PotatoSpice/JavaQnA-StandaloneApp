@@ -2,7 +2,7 @@ package controller;
 
 import interfaces.models.IQuestion;
 
-public class ITestStatistics implements interfaces.controller.ITestStatistics {
+public class TestStatistics implements interfaces.controller.ITestStatistics {
     @Override
     public double meanTimePerAnswer() {
         return 0;

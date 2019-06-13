@@ -20,6 +20,10 @@ public class QuestionYesNo extends Question implements interfaces.models.IQuesti
 
     private String correct_answer, user_answer;
 
+    public QuestionYesNo() {
+        super();
+    }
+
     @Override
     public String getCorrect_answer() {
         return correct_answer;

@@ -20,6 +20,10 @@ public class QuestionNumeric extends Question implements interfaces.models.IQues
 
     private double correct_answer, user_answer;
 
+    public QuestionNumeric() {
+        super();
+    }
+
     @Override
     public double getCorrect_anwser() {
         return correct_answer;

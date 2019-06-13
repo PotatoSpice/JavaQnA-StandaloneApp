@@ -1,7 +1,8 @@
 # ignorar os ficheiros do netbeans
-build.xml
-manifest.mf
-nbproject/*
+/build.xml
+/manifest.mf
+/nbproject/*
 
-# ignorar os documentos relativos aos recursos (javadoc e exemplo .json)
-recursos/docs/*
+# ignorar os documentos relativos aos recursos
+/recursos/docs/*
+/build/
