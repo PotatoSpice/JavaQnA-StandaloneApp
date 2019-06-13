@@ -10,6 +10,9 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonReader;
 import interfaces.controller.ITestStatistics;
 import interfaces.exceptions.TestException;
 import interfaces.models.IQuestion;
@@ -18,6 +21,11 @@ import models.Question;
 import models.QuestionMultipleChoice;
 import models.QuestionNumeric;
 import models.QuestionYesNo;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * <b>Esta classe implementa todos os métodos definidos no contrato relativo,
@@ -161,7 +169,101 @@ public class Test implements interfaces.controller.ITest {
     @Override
     public boolean loadFromJSONFile(String path) throws TestException {
         Gson gson = new Gson();
-        IQuestion[] fileQuestions = gson.fromJson(path, IQuestion[].class);
+        
+        Question[] fileQuestions = null; //gson.fromJson(path, Question[].class);
+
+
+
+        QuestionMultipleChoice[] multipleChoice = new QuestionMultipleChoice[50];
+        int counter1=0;
+        QuestionNumeric[] questionNumerics = new QuestionNumeric[50];
+        int counter2=0;
+        QuestionYesNo[] questionYesNos = new QuestionYesNo[50];
+        int counter3=0;
+
+
+        try {
+            FileReader inputFile = new FileReader(path);
+            BufferedReader bufferReader = new BufferedReader(inputFile);
+
+            JsonReader reader = new JsonReader(bufferReader);
+            reader.beginArray();
+            reader.beginObject();
+            //Fica aqui ou depois?
+            //fileQuestions = gson.fromJson(reader, Question[].class);
+
+
+            while(reader.hasNext()){
+                if(reader.nextName().equals("type")){
+                    String type = reader.nextString();
+
+                    if(type.equals("MultipleChoices")){
+
+                    }
+
+                    if(type.equals("YesNo")){
+
+                    }
+
+                    if(type.equals("Numeric")){
+
+                    }
+                    /*reader.beginObject();
+                    while(reader.hasNext()){
+                        if(reader.nextName().equals("question")){
+                            while(reader.hasNext()){
+                                if(reader.nextName().equals("title")){
+
+                                }
+
+                                if(reader.nextName().equals("question_description")){
+
+                                }
+
+                                if(type.equals("MultipleChoice"))
+                                    if(reader.nextName().equals("options")){
+
+                                    }
+
+                                if(reader.nextName().equals("correct_answers")){
+
+                                }
+
+                            }
+                        }
+                    } */
+
+                }
+
+
+            }
+            reader.endObject();
+            reader.endArray();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+       /* try {
+            FileReader inputFile = new FileReader(path);
+            BufferedReader bufferReader = new BufferedReader(inputFile);
+            String line;
+            while ((line = bufferReader.readLine()) != null) {
+
+                fileQuestions = gson.fromJson(bufferReader, Question[].class);
+                JsonElement element = gson.fromJson(line, JsonElement.class);
+                JsonObject jsonObj = element.getAsJsonObject();
+
+            }
+            // Close the buffer reader
+            bufferReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } */
 
         if (fileQuestions.length == 0)
         { // Se não existirem questões, retorna falso
@@ -206,7 +308,7 @@ public class Test implements interfaces.controller.ITest {
     }
 
     /**
-     * Procura e devolve a posição de um elemento em {@link questions}.
+     * Procura e devolve a posição de um elemento em {@link Question}.
      *
      * @param q elemento a ser encontrado
      * @return posição em que se encontra o elemento encontrado ou -1 se não
