@@ -17,6 +17,9 @@ import interfaces.controller.ITestStatistics;
 import interfaces.exceptions.TestException;
 import interfaces.models.IQuestion;
 import models.Question;
+import models.QuestionMultipleChoice;
+import models.QuestionNumeric;
+import models.QuestionYesNo;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -137,6 +140,16 @@ public class Test implements interfaces.controller.ITest {
         Gson gson = new Gson();
         Question[] fileQuestions = null; //gson.fromJson(path, Question[].class);
 
+
+
+        QuestionMultipleChoice[] multipleChoice = new QuestionMultipleChoice[50];
+        int counter1=0;
+        QuestionNumeric[] questionNumerics = new QuestionNumeric[50];
+        int counter2=0;
+        QuestionYesNo[] questionYesNos = new QuestionYesNo[50];
+        int counter3=0;
+
+
         try {
             FileReader inputFile = new FileReader(path);
             BufferedReader bufferReader = new BufferedReader(inputFile);
@@ -147,8 +160,48 @@ public class Test implements interfaces.controller.ITest {
             //Fica aqui ou depois?
             //fileQuestions = gson.fromJson(reader, Question[].class);
 
-            while(reader.hasNext()){
 
+            while(reader.hasNext()){
+                if(reader.nextName().equals("type")){
+                    String type = reader.nextString();
+
+                    if(type.equals("MultipleChoices")){
+
+                    }
+
+                    if(type.equals("YesNo")){
+
+                    }
+
+                    if(type.equals("Numeric")){
+
+                    }
+                    /*reader.beginObject();
+                    while(reader.hasNext()){
+                        if(reader.nextName().equals("question")){
+                            while(reader.hasNext()){
+                                if(reader.nextName().equals("title")){
+
+                                }
+
+                                if(reader.nextName().equals("question_description")){
+
+                                }
+
+                                if(type.equals("MultipleChoice"))
+                                    if(reader.nextName().equals("options")){
+
+                                    }
+
+                                if(reader.nextName().equals("correct_answers")){
+
+                                }
+
+                            }
+                        }
+                    } */
+
+                }
 
 
             }
