@@ -13,6 +13,11 @@ import com.google.gson.Gson;
 import interfaces.controller.ITestStatistics;
 import interfaces.exceptions.TestException;
 import interfaces.models.IQuestion;
+import java.util.Arrays;
+import models.Question;
+import models.QuestionMultipleChoice;
+import models.QuestionNumeric;
+import models.QuestionYesNo;
 
 /**
  * <b>Esta classe implementa todos os métodos definidos no contrato relativo,
@@ -23,7 +28,7 @@ import interfaces.models.IQuestion;
  */
 public class Test implements interfaces.controller.ITest {
 
-    private final IQuestion[] questions;
+    private final Question[] questions;
     private final int DEFAULT_SIZE = 50;
     private TestStatistics statistics = null;
 
@@ -32,7 +37,7 @@ public class Test implements interfaces.controller.ITest {
      * por defeito.
      */
     public Test() {
-        this.questions = new IQuestion[this.DEFAULT_SIZE];
+        this.questions = new Question[this.DEFAULT_SIZE];
     }
 
     @Override
@@ -47,7 +52,7 @@ public class Test implements interfaces.controller.ITest {
         { // Iterar sobre a estrutura de dados
             if (questions[pos] == null)
             { // Insere o objeto quando encontrar uma posição vazia
-                questions[pos] = (IQuestion) q;
+                questions[pos] = (Question) q;
                 return true;
             }
             pos++;
@@ -57,7 +62,7 @@ public class Test implements interfaces.controller.ITest {
 
     @Override
     public IQuestion getQuestion(int pos) throws TestException {
-        if (pos >= questions.length || pos < 0)
+        if (pos < questions.length && pos >= 0)
         { // verificar se a posição especificada pode ser verificada
             if (questions[pos] != null)
             { // retorna o objeto se existir
@@ -85,14 +90,14 @@ public class Test implements interfaces.controller.ITest {
     @Override
     public boolean removeQuestion(IQuestion q) {
 
-        return removeQuestion(findQuestion(q));
+        return removeQuestion(findQuestion((Question) q));
 
     }
 
     @Override
     public int numberQuestions() {
         int count = 0;
-        for (IQuestion q : questions)
+        for (Question q : questions)
         { // Itera sobre toda a estutura de dados
             if (q != null)
             { // Incrementa o contador de cada vez que encontra uma questão
@@ -108,11 +113,36 @@ public class Test implements interfaces.controller.ITest {
         { // Se não existirem questões, retorna falso
             return false;
         }
-        for (IQuestion q : questions)
+        /*
+         * NOTA sobre 'object casting': No caso deste método, durante as
+         * iterações no ciclo abaixo, uma vez que a classe 'Question' é
+         * abstrata, é ímpossível utilizar a sua instância. Então, será
+         * necessário realizar o casting para cada uma das questões. Para isso é
+         * utilizado o 'instanceof' como forma de fazer essa verificação.
+         */
+        for (Question q : questions)
         { // Itera sobre a estrutura de dados até que a condição se realize
-            if (!q.isDone())
-            { // Ao encontrar uma única questão incompleta, retorna falso
-                return false;
+            if (q instanceof QuestionYesNo)
+            {
+                QuestionYesNo temp = (QuestionYesNo) q;
+                if (!q.isDone())
+                { // Ao encontrar uma única questão incompleta, retorna falso
+                    return false;
+                }
+            } else if (q instanceof QuestionMultipleChoice)
+            {
+                QuestionMultipleChoice temp = (QuestionMultipleChoice) q;
+                if (!q.isDone())
+                { // Ao encontrar uma única questão incompleta, retorna falso
+                    return false;
+                }
+            } else if (q instanceof QuestionNumeric)
+            {
+                QuestionNumeric temp = (QuestionNumeric) q;
+                if (!q.isDone())
+                { // Ao encontrar uma única questão incompleta, retorna falso
+                    return false;
+                }
             }
         }
         return true;
@@ -120,7 +150,12 @@ public class Test implements interfaces.controller.ITest {
 
     @Override
     public ITestStatistics getTestStatistics() {
-        return this.statistics = new TestStatistics(this.questions);
+        if (this.statistics == null)
+        { // Organizar os dados e criar uma instância para estatísticas
+            int num = this.organizeData(0);
+            this.statistics = new TestStatistics(this.questions, num);
+        }
+        return this.statistics;
     }
 
     @Override
@@ -160,10 +195,11 @@ public class Test implements interfaces.controller.ITest {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         Gson gson = new Gson();
-        for (IQuestion q : this.questions)
+        int size = this.organizeData(0);
+        for (int i = 0; i < size; i++)
         {
             builder.append("----------------\nQuestion:\n");
-            builder.append(gson.toJson(q));
+            builder.append(gson.toJson(questions[i]));
             builder.append('\n');
         }
         return builder.toString();
@@ -176,7 +212,7 @@ public class Test implements interfaces.controller.ITest {
      * @return posição em que se encontra o elemento encontrado ou -1 se não
      * existir
      */
-    public int findQuestion(IQuestion q) {
+    public int findQuestion(Question q) {
         int pos = 0;
         while (pos < questions.length)
         { // Iterar sobre a estrutura de dados
@@ -192,15 +228,16 @@ public class Test implements interfaces.controller.ITest {
 
     /**
      * Elimina elementos vazios entre cada dois elementos consecutivos, a partir
-     * de uma posição inicial.<p>
-     * <b>Nota:</b> Este método não está a ser utilizado devido a como a
-     * estrutura de dados está a ser tratada. Isto é, de tal forma que não
-     * necessário o seu uso.
+     * de uma posição inicial. Adicionalmente, retorna o número de elementos não
+     * nulos total.<p>
+     * <b>Nota:</b> Este método não é muito utilizado dentro da classe. No
+     * entanto, pode surgir mais utilidade eventualmente.
      *
      * @param pos posição inicial
+     * @return total de elementos não nulos
      */
-    public void trimData(int pos) {
-        int i = pos, j;
+    public int organizeData(int pos) {
+        int i = pos, j, count = 0;
         while (i < questions.length)
         { // Iterar sobre toda a estrutura de dados
             if (questions[i] == null)
@@ -212,8 +249,21 @@ public class Test implements interfaces.controller.ITest {
                     questions[j] = questions[j + 1];
                     j++;
                 }
+                count++; // Incrementa o contador a cada valor nulo encontrado.
             }
             i++;
         }
+        return (i - count) + 1;
+    }
+
+    /**
+     * Este método deveria estar na interface fornecida pelos recursos, uma vez
+     * que está no UML no enunciado. No entanto, não é o caso. (Enviar email aos
+     * profs sobre isto)
+     *
+     * @param path
+     */
+    void saveTestResults(String path) {
+
     }
 }

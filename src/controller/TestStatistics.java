@@ -9,7 +9,10 @@
  */
 package controller;
 
-import interfaces.models.IQuestion;
+import models.Question;
+import models.QuestionMultipleChoice;
+import models.QuestionNumeric;
+import models.QuestionYesNo;
 
 /**
  * <b>Esta classe implementa todos os métodos definidos no contrato relativo,
@@ -17,81 +20,154 @@ import interfaces.models.IQuestion;
  * method' encontra-se já especificada na documentação da API.</b>
  * Contudo, novos métodos adicionados ou alterações pertinentes serão
  * devidamente documentadas.
+ * <p>
  */
 public class TestStatistics implements interfaces.controller.ITestStatistics {
 
-    private final IQuestion[] testQuestions;
+    private final Question[] testQuestions;
+    private final int NUMBER_QUESTIONS;
 
     /**
      * Construtor com a inicialização da estrutura de dados a ser alvo de
      * análise.
      *
      * @param qlist estrutura de dados com as questões para análise estatística
+     * @param num número de questões não nulas dentro da estrutura de dados
      */
-    public TestStatistics(IQuestion[] qlist) {
+    public TestStatistics(Question[] qlist, int num) {
         this.testQuestions = qlist;
+        this.NUMBER_QUESTIONS = num;
     }
 
     @Override
     public double meanTimePerAnswer() {
-        double totalTimeSum = 0, qTime;
-        for (IQuestion q : this.testQuestions)
-        { // Calcular o somatório dos tempos de resposta
-            qTime // Calcular o tempo gasto na resposta
-                    = q.getQuestion_metadata().getTimestamp_finish()
-                    - q.getQuestion_metadata().getTimestamp_start();
-            totalTimeSum += qTime; // Somar ao tempo total
-        }
-        /* 
-        Utilização do Math.floor, juntamente com a multiplicação e divisão
-        por 100, serve para arredondar o valor calculado da média do tempo de 
-        resposta a duas casas decimais.
+        double totalTimeSum = 0, qTime, mean = 0;
+        /*
+         * NOTA sobre 'object casting': No caso deste método, durante as
+         * iterações no ciclo abaixo, uma vez que a classe 'Question' é
+         * abstrata, é ímpossível utilizar a sua instância. Então, será
+         * necessário realizar o casting para cada uma das questões. Para isso é
+         * utilizado o 'instanceof' como forma de fazer essa verificação.
          */
-        return Math.floor((totalTimeSum / testQuestions.length) * 100) / 100;
+        try
+        {
+            for (Question q : this.testQuestions)
+            { // Calcular o somatório dos tempos de resposta
+                if (q instanceof QuestionYesNo)
+                {
+                    QuestionYesNo temp = (QuestionYesNo) q;
+                    qTime // Calcular o tempo gasto na resposta
+                            = temp.getQuestion_metadata().getTimestamp_finish()
+                            - temp.getQuestion_metadata().getTimestamp_start();
+                    totalTimeSum += qTime; // Somar ao tempo total
+                } else if (q instanceof QuestionMultipleChoice)
+                {
+                    QuestionMultipleChoice temp = (QuestionMultipleChoice) q;
+                    qTime // Calcular o tempo gasto na resposta
+                            = temp.getQuestion_metadata().getTimestamp_finish()
+                            - temp.getQuestion_metadata().getTimestamp_start();
+                    totalTimeSum += qTime; // Somar ao tempo total
+                } else if (q instanceof QuestionNumeric)
+                {
+                    QuestionNumeric temp = (QuestionNumeric) q;
+                    qTime // Calcular o tempo gasto na resposta
+                            = temp.getQuestion_metadata().getTimestamp_finish()
+                            - temp.getQuestion_metadata().getTimestamp_start();
+                    totalTimeSum += qTime; // Somar ao tempo total
+                }
+            }
+            mean = (totalTimeSum / testQuestions.length);
+        } catch (NullPointerException exc)
+        {
+            System.out.println("Class Name: " + this.getClass().getName() + " - "
+                    + "A estrutura de dados disponibilizada contém elementos inválidos!");
+        }
+        return Math.floor(mean * 100) / 100; //arredondar 2 casas decimais
     }
 
     @Override
     public double standardDeviationTimePerAnsewer() {
         double mean = this.meanTimePerAnswer(); // Buscar a média dos tempos
-        double variance, varianceSum = 0, qTime;
-
-        for (IQuestion q : this.testQuestions)
-        { // Calcular o somatório para o cálculo da variância
-            qTime // Calcular o tempo gasto na resposta
-                    = q.getQuestion_metadata().getTimestamp_finish()
-                    - q.getQuestion_metadata().getTimestamp_start();
-            varianceSum += Math.pow((qTime - mean), 2);
-        }
-
-        variance = varianceSum / testQuestions.length;
-
-        /* 
-        Utilização do Math.floor, juntamente com a multiplicação e divisão
-        por 100, serve para arredondar o valor calculado do desvio padrão a 
-        duas casas decimais.
+        double variance = 0, varianceSum = 0, qTime;
+        /*
+         * NOTA sobre 'object casting': O mesmo que o método
+         * 'this.meanTimePerAnswer()'.
          */
-        return Math.floor(Math.sqrt(variance) * 100) / 100;
+        try
+        {
+            for (Question q : this.testQuestions)
+            { // Calcular o somatório para o cálculo da variância
+                qTime // Calcular o tempo gasto na resposta
+                        = q.getQuestion_metadata().getTimestamp_finish()
+                        - q.getQuestion_metadata().getTimestamp_start();
+                varianceSum += Math.pow((qTime - mean), 2);
+            }
+            variance = varianceSum / testQuestions.length;
+
+        } catch (NullPointerException exc)
+        {
+            System.out.println("Class Name: " + this.getClass().getName() + " - "
+                    + "A estrutura de dados disponibilizada contém elementos inválidos!");
+        }
+        return Math.floor(Math.sqrt(variance) * 100) / 100; // arredondar 2 casas
     }
 
     @Override
     public double correctAnswerPecentage() {
-        return (correctAnswer() / testQuestions.length) * 100;
+        double result = ((double) this.correctAnswer()
+                / (double) NUMBER_QUESTIONS) * 100D;
+        return Math.floor(result * 100) / 100; // arredondar a 2 casas decimais
     }
 
     @Override
     public double incorrectAnswerPecentage() {
-        return (incorrectAnswer() / testQuestions.length) * 100;
+        double result = ((double) this.incorrectAnswer()
+                / (double) NUMBER_QUESTIONS) * 100D;
+        return Math.floor(result * 100) / 100; // arredondar a 2 casas decimais
     }
 
     @Override
     public int correctAnswer() {
         int count = 0;
-        for (IQuestion q : this.testQuestions)
-        { // Verificar todas as posições da estrutura de dados
-            if (q.evaluateAnswer())
-            { // Quando encontrar uma pergunta avaliada como correta, incrementa
-                count++;
+        /*
+         * NOTA sobre 'object casting': No caso deste método, durante as
+         * iterações no ciclo abaixo, tendo em conta que o método que será
+         * chamado é específico de cada uma das questões descendentes, uma vez
+         * que se trata de um método abstrato na classe principal, será então
+         * necessário realizar o casting para cada uma das questões. Para isso é
+         * utilizado o 'instanceof' como forma de fazer essa verificação.
+         */
+        try
+        {
+            for (Question q : this.testQuestions)
+            { // Verificar todas as posições da estrutura de dados
+                if (q instanceof QuestionYesNo)
+                {
+                    QuestionYesNo temp = (QuestionYesNo) q;
+                    if (temp.evaluateAnswer())
+                    { // Pergunta avaliada como correta, incrementa o contador
+                        count++;
+                    }
+                } else if (q instanceof QuestionMultipleChoice)
+                {
+                    QuestionMultipleChoice temp = (QuestionMultipleChoice) q;
+                    if (temp.evaluateAnswer())
+                    { // Pergunta avaliada como correta, incrementa o contador
+                        count++;
+                    }
+                } else if (q instanceof QuestionNumeric)
+                {
+                    QuestionNumeric temp = (QuestionNumeric) q;
+                    if (temp.evaluateAnswer())
+                    { // Pergunta avaliada como correta, incrementa o contador
+                        count++;
+                    }
+                }
             }
+        } catch (NullPointerException exc)
+        {
+            System.out.println("Class Name: " + this.getClass().getName() + " - "
+                    + "A estrutura de dados disponibilizada contém elementos inválidos!");
         }
         return count;
     }
@@ -99,51 +175,144 @@ public class TestStatistics implements interfaces.controller.ITestStatistics {
     @Override
     public int incorrectAnswer() {
         int count = 0;
-        for (IQuestion q : this.testQuestions)
-        { // Verificar todas as posições da estrutura de dados
-            if (!q.evaluateAnswer())
-            { // Quando encontrar uma pergunta avaliada como incorreta, incrementa
-                count++;
+        /*
+         * NOTA sobre 'object casting': O mesmo que o método
+         * 'this.correctAnswer()'
+         */
+        try
+        {
+            for (Question q : this.testQuestions)
+            { // Verificar todas as posições da estrutura de dados
+                if (q instanceof QuestionYesNo)
+                {
+                    QuestionYesNo temp = (QuestionYesNo) q;
+                    if (!temp.evaluateAnswer())
+                    { // Pergunta avaliada como incorreta, incrementa o contador
+                        count++;
+                    }
+                } else if (q instanceof QuestionMultipleChoice)
+                {
+                    QuestionMultipleChoice temp = (QuestionMultipleChoice) q;
+                    if (!temp.evaluateAnswer())
+                    { // Pergunta avaliada como incorreta, incrementa o contador
+                        count++;
+                    }
+                } else if (q instanceof QuestionNumeric)
+                {
+                    QuestionNumeric temp = (QuestionNumeric) q;
+                    if (!temp.evaluateAnswer())
+                    { // Pergunta avaliada como incorreta, incrementa o contador
+                        count++;
+                    }
+                }
             }
+        } catch (NullPointerException exc)
+        {
+            System.out.println("Class Name: " + this.getClass().getName() + " - "
+                    + "A estrutura de dados disponibilizada contém elementos inválidos!");
         }
         return count;
     }
 
     @Override
-    public IQuestion[] incorrectAnswers() {
+    public Question[] incorrectAnswers() {
         int j = this.incorrectAnswer(); // Buscar o número de respostas corretas
-        IQuestion[] temp
+        Question[] result
                 = // Instanciar uma estrutura com o tamanho necessário
-                new IQuestion[j];
+                new Question[j + 1];
 
         j = 0;
-        for (IQuestion q : testQuestions)
-        { // Iterar sobre a estrutura de dados principal
-            if (!q.evaluateAnswer())
-            { // Adicionar as respostas corretas
-                temp[j] = q;
-                j++;
+        /*
+         * NOTA sobre 'object casting': O mesmo que o método
+         * 'this.correctAnswer()'
+         */
+        try
+        {
+            for (Question q : testQuestions)
+            {
+                if (q instanceof QuestionYesNo)
+                {
+                    QuestionYesNo temp = (QuestionYesNo) q;
+                    if (!temp.evaluateAnswer())
+                    { // Adicionar as respostas incorretas
+                        result[j] = q;
+                        j++;
+                    }
+                } else if (q instanceof QuestionMultipleChoice)
+                {
+                    QuestionMultipleChoice temp = (QuestionMultipleChoice) q;
+                    if (!q.evaluateAnswer())
+                    { // Adicionar as respostas incorretas
+                        result[j] = q;
+                        j++;
+                    }
+                } else if (q instanceof QuestionNumeric)
+                {
+                    QuestionNumeric temp = (QuestionNumeric) q;
+                    if (!q.evaluateAnswer())
+                    { // Adicionar as respostas incorretas
+                        result[j] = q;
+                        j++;
+                    }
+                }
             }
+            return result;
+        } catch (NullPointerException exc)
+        {
+            System.out.println("Class Name: " + this.getClass().getName() + " - "
+                    + "A estrutura de dados disponibilizada contém elementos inválidos!");
         }
-        return temp;
+        return null;
     }
 
     @Override
-    public IQuestion[] correctAnswers() {
+    public Question[] correctAnswers() {
         int j = this.correctAnswer(); // Buscar o número de respostas corretas
-        IQuestion[] temp
+        Question[] result
                 = // Instanciar uma estrutura com o tamanho necessário
-                new IQuestion[j];
+                new Question[j + 1];
 
         j = 0;
-        for (IQuestion q : testQuestions)
-        { // Iterar sobre a estrutura de dados principal
-            if (q.evaluateAnswer())
-            { // Adicionar as respostas corretas
-                temp[j] = q;
-                j++;
+        /*
+         * NOTA sobre 'object casting': O mesmo que o método
+         * 'this.correctAnswer()'
+         */
+        try
+        {
+            for (Question q : testQuestions)
+            { // Iterar sobre a estrutura de dados principal
+                if (q instanceof QuestionYesNo)
+                {
+                    QuestionYesNo temp = (QuestionYesNo) q;
+                    if (!temp.evaluateAnswer())
+                    { // Adicionar as respostas corretas
+                        result[j] = q;
+                        j++;
+                    }
+                } else if (q instanceof QuestionMultipleChoice)
+                {
+                    QuestionMultipleChoice temp = (QuestionMultipleChoice) q;
+                    if (!q.evaluateAnswer())
+                    { // Adicionar as respostas corretas
+                        result[j] = q;
+                        j++;
+                    }
+                } else if (q instanceof QuestionNumeric)
+                {
+                    QuestionNumeric temp = (QuestionNumeric) q;
+                    if (!q.evaluateAnswer())
+                    { // Adicionar as respostas corretas
+                        result[j] = q;
+                        j++;
+                    }
+                }
             }
+            return result;
+        } catch (NullPointerException exc)
+        {
+            System.out.println("Class Name: " + this.getClass().getName() + " - "
+                    + "A estrutura de dados disponibilizada contém elementos inválidos!");
         }
-        return temp;
+        return null;
     }
 }
