@@ -11,15 +11,19 @@ package models;
 
 /**
  * <b>Esta classe implementa todos os métodos definidos no contrato relativo,
- * presente na API 'recursos.jar'. Ou seja, a documentação para cada 'overriden
- * method' encontra-se já especificada na documentação da API.</b>
- * Contudo, novos métodos adicionados ou alterações pertinentes serão
- * devidamente documentadas.
+ * {@link interfaces.models.IQuestionMultipleChoice}.</b>
+ * Ou seja, a documentação para cada 'overriden method' encontra-se já
+ * especificada na documentação da API. Contudo, novos métodos adicionados ou
+ * alterações pertinentes serão devidamente documentadas.
  */
 public class QuestionMultipleChoice extends Question implements interfaces.models.IQuestionMultipleChoice {
 
     private String[] options;
     private String correct_answer, user_answer;
+
+    public QuestionMultipleChoice() {
+        super();
+    }
 
     @Override
     public String[] getOptions() {
@@ -50,12 +54,13 @@ public class QuestionMultipleChoice extends Question implements interfaces.model
     public void setUser_answer(String user_answer) {
         this.user_answer = user_answer;
     }
-    
+
     @Override
     public void answer(String user_answer) {
         this.setUser_answer(user_answer);
+        super.setDone(true); // Sinalizar a realização da resposta
     }
-    
+
     @Override
     public boolean evaluateAnswer() {
         return correct_answer.equals(user_answer);

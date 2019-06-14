@@ -11,10 +11,10 @@ package models;
 
 /**
  * <b>Esta classe implementa todos os métodos definidos no contrato relativo,
- * presente na API 'recursos.jar'. Ou seja, a documentação para cada 'overriden
- * method' encontra-se já especificada na documentação da API.</b>
- * Contudo, novos métodos adicionados ou alterações pertinentes serão
- * devidamente documentadas.
+ * {@link interfaces.models.IQuestionMetadata}.</b>
+ * Ou seja, a documentação para cada 'overriden method' encontra-se já
+ * especificada na documentação da API. Contudo, novos métodos adicionados ou
+ * alterações pertinentes serão devidamente documentadas.
  */
 public class QuestionMetadata implements interfaces.models.IQuestionMetadata {
 
@@ -40,10 +40,6 @@ public class QuestionMetadata implements interfaces.models.IQuestionMetadata {
 
     @Override
     public void setTimestamp_finish(long timestamp_finish) {
-        /*
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        timestamp_finish = Long.parseLong(String.valueOf(timestamp));
-         */
         this.questionfinisht = timestamp_finish;
     }
 

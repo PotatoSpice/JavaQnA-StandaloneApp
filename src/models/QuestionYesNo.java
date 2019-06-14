@@ -11,14 +11,18 @@ package models;
 
 /**
  * <b>Esta classe implementa todos os métodos definidos no contrato relativo,
- * presente na API 'recursos.jar'. Ou seja, a documentação para cada 'overriden
- * method' encontra-se já especificada na documentação da API.</b>
- * Contudo, novos métodos adicionados ou alterações pertinentes serão
- * devidamente documentadas.
+ * {@link interfaces.models.IQuestionYesNo}.</b>
+ * Ou seja, a documentação para cada 'overriden method' encontra-se já
+ * especificada na documentação da API. Contudo, novos métodos adicionados ou
+ * alterações pertinentes serão devidamente documentadas.
  */
 public class QuestionYesNo extends Question implements interfaces.models.IQuestionYesNo {
 
     private String correct_answer, user_answer;
+
+    public QuestionYesNo() {
+        super();
+    }
 
     @Override
     public String getCorrect_answer() {
@@ -43,11 +47,12 @@ public class QuestionYesNo extends Question implements interfaces.models.IQuesti
     @Override
     public void answer(String user_answer) {
         this.setUser_answer(user_answer);
+        super.setDone(true); // Sinalizar a realização da resposta
     }
 
     @Override
     public boolean evaluateAnswer() {
-        return correct_answer.equals(user_answer);
+        return correct_answer.equalsIgnoreCase(user_answer);
     }
 
 }

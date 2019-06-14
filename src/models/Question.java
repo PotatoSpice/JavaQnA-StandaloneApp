@@ -14,21 +14,21 @@ import interfaces.models.IQuestionMetadata;
 
 /**
  * <b>Esta classe implementa todos os métodos definidos no contrato relativo,
- * presente na API 'recursos.jar'. Ou seja, a documentação para cada 'overriden
- * method' encontra-se já especificada na documentação da API.</b>
- * Contudo, novos métodos adicionados ou alterações pertinentes serão
- * devidamente documentadas.
+ * {@link interfaces.models.IQuestion}.</b>
+ * Ou seja, a documentação para cada 'overriden method' encontra-se já
+ * especificada na documentação da API. Contudo, novos métodos adicionados ou
+ * alterações pertinentes serão devidamente documentadas.
  * <p>
- * <b>Nota:</b> Em relação aos 'overriden methods', a implementação de dois
- * desses métodos faz mais sentido ser realizada somente nas classes
- * descendentes. Então, encontram-se definidos como métodos abstratos e
- * consequentemente também a própria classe.
+ * <b>Nota:</b> Em relação aos métodos {@link #answer(java.lang.String)} e
+ * {@link #evaluateAnswer()}, faz mais sentido que a sua implementação seja
+ * realizada somente nas classes descendentes. Por essa razão, estão definidos
+ * como métodos abstratos e, consequentemente, também a própria classe.
  */
 public abstract class Question implements interfaces.models.IQuestion {
 
     private String title;
     private String question_description;
-    private IQuestionMetadata question_metadata;
+    private QuestionMetadata question_metadata = new QuestionMetadata();
     private boolean done = false;
 
     @Override
@@ -38,9 +38,9 @@ public abstract class Question implements interfaces.models.IQuestion {
 
     @Override
     public void setTitle(String title) throws QuestionException {
-        if (done) {
-            throw new QuestionException("Questão já foi respondida! "
-                    + "Impossível alterar o título.");
+        if (title == null)
+        {
+            throw new QuestionException();
         }
         this.title = title;
     }
@@ -52,9 +52,9 @@ public abstract class Question implements interfaces.models.IQuestion {
 
     @Override
     public void setQuestion_description(String description) throws QuestionException {
-        if (done) {
-            throw new QuestionException("Questão já foi respondida! "
-                    + "Impossivel alterar a descrição.");
+        if (description == null)
+        {
+            throw new QuestionException();
         }
         this.question_description = description;
     }
@@ -66,7 +66,7 @@ public abstract class Question implements interfaces.models.IQuestion {
 
     @Override
     public void setQuestion_metadata(IQuestionMetadata metadata) {
-        this.question_metadata = metadata;
+        this.question_metadata = (QuestionMetadata) metadata;
     }
 
     @Override
@@ -77,23 +77,18 @@ public abstract class Question implements interfaces.models.IQuestion {
     @Override
     public void setDone(boolean done) {
         this.done = done;
+        /* 
+        Sinalizar o tempo de resposta à pergunta.
+        (o tempo de resposta a uma pergunta, então, será o tempo decorrido
+        desde a primeira abertura da pergunta até à última resposta selecionada,
+        pois de cada vez que se altere a resposta dada, irá atualizar o timestamp)
+         */
+        this.question_metadata.setTimestamp_finish(System.currentTimeMillis());
     }
 
-    /**
-     * Este método só será usado por classes descendentes, tendo em conta que
-     * não faria sentido ser utilizado nesta classe.
-     *
-     * @param user_answer
-     */
     @Override
     abstract public void answer(String user_answer);
 
-    /**
-     * A avaliação da resposta é realizada apenas nas classes descendentes. Ou
-     * seja, o método desta classe será abstrato.
-     *
-     * @return verdadeiro se a resposta estiver correta, falso no contrário
-     */
     @Override
     abstract public boolean evaluateAnswer();
 
