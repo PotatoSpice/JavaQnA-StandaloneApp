@@ -10,17 +10,7 @@
 package main;
 
 import controller.Test;
-import controller.TestStatistics;
-import interfaces.controller.ITest;
-import interfaces.exceptions.QuestionException;
 import interfaces.exceptions.TestException;
-import interfaces.models.IQuestionMultipleChoice;
-import interfaces.models.IQuestionYesNo;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import models.QuestionMetadata;
-import models.QuestionMultipleChoice;
-import models.QuestionYesNo;
 import views.TestWindow;
 
 /**
@@ -29,16 +19,16 @@ import views.TestWindow;
  */
 public class Main {
 
-    public static void main(String[] args) throws TestException {
-        try
-        {
-            /*
-            Código abaixo serve como exemplo de utilização
-             */
-            System.out.println("Início de Teste!");
+    public static void main(String[] args) {
+        /*
+        Código abaixo serve como exemplo de utilização
+         */
+        System.out.println("Início de Teste!");
+        Test demoTest = new Test();
 
+        /*
+        try {
             // Carregar o teste
-            Test demoTest = new Test();
             QuestionYesNo q = new QuestionYesNo();
             q.setTitle("pergunta sim e nao");
             q.setQuestion_description("descrição asdasdashdaskjdsahdsakd");
@@ -76,7 +66,7 @@ public class Main {
             System.out.println("Question added: " + demoTest.addQuestion(q3));
 
             System.out.println("Correct: " + demoTest.getTestStatistics().correctAnswer());
-            
+
             System.out.println("Number of questions: " + demoTest.numberQuestions());
             System.out.println("teste: " + demoTest.getQuestion(0).getTitle());
             TestStatistics statistics = (TestStatistics) demoTest.getTestStatistics();
@@ -86,24 +76,27 @@ public class Main {
             System.out.println("Incorrect answers %: " + statistics.incorrectAnswerPecentage());
             System.out.println("MeanTime answer: " + statistics.meanTimePerAnswer());
             System.out.println("Standard Deviation: " + statistics.standardDeviationTimePerAnsewer());
-             
+        } catch (TestException | QuestionException ex)
+        {
+            System.err.println("Exceção na classe {" + ex.getClass().getName()
+                    + "}\nMensagem: " + ex.getMessage());
+        } */
+        try
+        {
+            demoTest.loadFromJSONFile("content/teste_A.json");
 
             // Executar o teste na camada gráfica
             TestWindow t = new TestWindow();
-            try
-            {
-                t.startTest(demoTest);
 
-                // Obter os resultados do teste
-                System.out.println("Teste Efetuado!");
-                System.out.println(demoTest.toString());
-            } catch (TestException ex)
-            {
-                System.err.println("Problemas na classe 'TestWindow'");
-            }
-        } catch (QuestionException ex)
+            t.startTest(demoTest);
+
+            // Obter os resultados do teste
+            System.out.println("Teste Efetuado!");
+            System.out.println(demoTest.toString());
+        } catch (TestException ex)
         {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Problemas na classe {" + ex.getClass().getName()
+                    + "}\nMensagem: " + ex.getMessage());
         }
     }
 
