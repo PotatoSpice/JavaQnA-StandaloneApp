@@ -358,14 +358,15 @@ public class Test implements interfaces.controller.ITest {
         return (i - count) + 1;
     }
 
-    /**
-     * Este método deveria estar na interface fornecida pelos recursos, uma vez
-     * que está no UML no enunciado. No entanto, não é o caso. (Enviar email aos
-     * profs sobre isto)
-     *
-     * @param path
-     */
-    void saveTestResults(String path) {
-
+    @Override
+    public boolean saveTestResults(String path) throws TestException{
+        /*
+        Falta implementar este método.
+        Ter cuidado com o uso da exceção. Como diz no javadoc 
+        "Throws:
+        TestException - if there is no question at the specified position"
+        Neste caso, é igual a como está no método this.getQuestion().
+        */
+        return false;
     }
 }
