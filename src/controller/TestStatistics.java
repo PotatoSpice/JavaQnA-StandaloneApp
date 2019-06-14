@@ -42,7 +42,7 @@ public class TestStatistics implements interfaces.controller.ITestStatistics {
             { // Calcular o somatório dos tempos de resposta
                 QuestionMetadata meta = (QuestionMetadata) q.getQuestion_metadata();
                 qTime // Calcular o tempo gasto na resposta
-                        = meta.getTimestamp_finish() - meta.getTimestamp_start();
+                        = (meta.getTimestamp_finish() - meta.getTimestamp_start());
                 totalTimeSum += qTime; // Somar ao tempo total
             }
             mean = (totalTimeSum / testQuestions.length);
@@ -51,6 +51,7 @@ public class TestStatistics implements interfaces.controller.ITestStatistics {
             System.err.println("Class Name: " + this.getClass().getName() + " - "
                     + "A estrutura de dados disponibilizada contém elementos inválidos!");
         }
+        mean /= 1000; // Colocar o tempo em segundos
         return Math.floor(mean * 100) / 100; //arredondar 2 casas decimais
     }
 
@@ -65,7 +66,8 @@ public class TestStatistics implements interfaces.controller.ITestStatistics {
             { // Calcular o somatório para o cálculo da variância
                 QuestionMetadata meta = (QuestionMetadata) q.getQuestion_metadata();
                 qTime // Calcular o tempo gasto na resposta
-                        = meta.getTimestamp_finish() - meta.getTimestamp_start();
+                        = (meta.getTimestamp_finish() - meta.getTimestamp_start())
+                        / 1000; // Colocar tempo em segundos
 
                 varianceSum += Math.pow((qTime - mean), 2);
             }

@@ -130,7 +130,7 @@ public class Test implements interfaces.controller.ITest {
 
         for (Question question : questions)
         { // Itera sobre a estrutura de dados até que a condição se realize
-            if (!question.isDone())
+            if (question != null && !question.isDone())
             { // Ao encontrar uma única questão incompleta, retorna falso
                 return false;
             }
