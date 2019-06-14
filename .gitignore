@@ -6,3 +6,4 @@
 
 # ignorar os documentos relativos aos recursos (javadoc e exemplo .json)
 /recursos/docs/*
+/dist/

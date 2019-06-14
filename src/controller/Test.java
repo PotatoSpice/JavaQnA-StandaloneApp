@@ -10,13 +10,10 @@
 package controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import interfaces.controller.ITestStatistics;
 import interfaces.exceptions.TestException;
 import interfaces.models.IQuestion;
-import java.util.Arrays;
 import models.Question;
 import models.QuestionMultipleChoice;
 import models.QuestionNumeric;
@@ -29,10 +26,10 @@ import java.io.IOException;
 
 /**
  * <b>Esta classe implementa todos os métodos definidos no contrato relativo,
- * presente na API 'recursos.jar'. Ou seja, a documentação para cada 'overriden
- * method' encontra-se já especificada na documentação da API.</b>
- * Contudo, novos métodos adicionados ou alterações pertinentes serão
- * devidamente documentadas.
+ * {@link interfaces.controller.ITest}.</b>
+ * Ou seja, a documentação para cada 'overriden method' encontra-se já
+ * especificada na documentação da API. Contudo, novos métodos adicionados ou
+ * alterações pertinentes serão devidamente documentadas.
  */
 public class Test implements interfaces.controller.ITest {
 
@@ -41,7 +38,7 @@ public class Test implements interfaces.controller.ITest {
     private TestStatistics statistics = null;
 
     /**
-     * Construtor para inicialização da estrutura de dados com tamanho inicial
+     * Construtor para inicialização de {@link #questions} com tamanho inicial
      * por defeito.
      */
     public Test() {
@@ -54,7 +51,17 @@ public class Test implements interfaces.controller.ITest {
         { // Lança uma exceção se o objeto for nulo
             throw new TestException();
         }
-
+        /*
+        Nota sobre implementação: 
+        O enunciado não fala nisto mas seria conveniente que o método não
+        permitisse que fossem introduzidas questões repetidas. Isso fazia-se
+        facilmente com o código abaixo:
+        if (this.findQuestion(q) != -1) {
+            return false;
+            // ou
+            // throw new TestException();
+        }
+         */
         int pos = 0;
         while (pos < questions.length)
         { // Iterar sobre a estrutura de dados
@@ -86,10 +93,9 @@ public class Test implements interfaces.controller.ITest {
 
     @Override
     public boolean removeQuestion(int pos) {
-        if (pos > 0 && pos < questions.length && questions[pos] != null)
+        if (pos < questions.length && pos >= 0 && questions[pos] != null)
         { // verificar se a posição pode ser verificada e se o conteúdo existe
             questions[pos] = null;
-            // trim(pos);
             return true;
         }
         return false;
@@ -121,36 +127,12 @@ public class Test implements interfaces.controller.ITest {
         { // Se não existirem questões, retorna falso
             return false;
         }
-        /*
-         * NOTA sobre 'object casting': No caso deste método, durante as
-         * iterações no ciclo abaixo, uma vez que a classe 'Question' é
-         * abstrata, é ímpossível utilizar a sua instância. Então, será
-         * necessário realizar o casting para cada uma das questões. Para isso é
-         * utilizado o 'instanceof' como forma de fazer essa verificação.
-         */
-        for (Question q : questions)
+
+        for (Question question : questions)
         { // Itera sobre a estrutura de dados até que a condição se realize
-            if (q instanceof QuestionYesNo)
-            {
-                QuestionYesNo temp = (QuestionYesNo) q;
-                if (!q.isDone())
-                { // Ao encontrar uma única questão incompleta, retorna falso
-                    return false;
-                }
-            } else if (q instanceof QuestionMultipleChoice)
-            {
-                QuestionMultipleChoice temp = (QuestionMultipleChoice) q;
-                if (!q.isDone())
-                { // Ao encontrar uma única questão incompleta, retorna falso
-                    return false;
-                }
-            } else if (q instanceof QuestionNumeric)
-            {
-                QuestionNumeric temp = (QuestionNumeric) q;
-                if (!q.isDone())
-                { // Ao encontrar uma única questão incompleta, retorna falso
-                    return false;
-                }
+            if (!question.isDone())
+            { // Ao encontrar uma única questão incompleta, retorna falso
+                return false;
             }
         }
         return true;
@@ -160,8 +142,7 @@ public class Test implements interfaces.controller.ITest {
     public ITestStatistics getTestStatistics() {
         if (this.statistics == null)
         { // Organizar os dados e criar uma instância para estatísticas
-            int num = this.organizeData(0);
-            this.statistics = new TestStatistics(this.questions, num);
+            this.statistics = new TestStatistics(this.organizeData());
         }
         return this.statistics;
     }
@@ -169,20 +150,18 @@ public class Test implements interfaces.controller.ITest {
     @Override
     public boolean loadFromJSONFile(String path) throws TestException {
         Gson gson = new Gson();
-        
+
         Question[] fileQuestions = null; //gson.fromJson(path, Question[].class);
 
-
-
         QuestionMultipleChoice[] multipleChoice = new QuestionMultipleChoice[50];
-        int counter1=0;
+        int counter1 = 0;
         QuestionNumeric[] questionNumerics = new QuestionNumeric[50];
-        int counter2=0;
+        int counter2 = 0;
         QuestionYesNo[] questionYesNos = new QuestionYesNo[50];
-        int counter3=0;
+        int counter3 = 0;
 
-
-        try {
+        try
+        {
             FileReader inputFile = new FileReader(path);
             BufferedReader bufferReader = new BufferedReader(inputFile);
 
@@ -192,20 +171,24 @@ public class Test implements interfaces.controller.ITest {
             //Fica aqui ou depois?
             //fileQuestions = gson.fromJson(reader, Question[].class);
 
-
-            while(reader.hasNext()){
-                if(reader.nextName().equals("type")){
+            while (reader.hasNext())
+            {
+                if (reader.nextName().equals("type"))
+                {
                     String type = reader.nextString();
 
-                    if(type.equals("MultipleChoices")){
+                    if (type.equals("MultipleChoices"))
+                    {
 
                     }
 
-                    if(type.equals("YesNo")){
+                    if (type.equals("YesNo"))
+                    {
 
                     }
 
-                    if(type.equals("Numeric")){
+                    if (type.equals("Numeric"))
+                    {
 
                     }
                     /*reader.beginObject();
@@ -235,18 +218,19 @@ public class Test implements interfaces.controller.ITest {
 
                 }
 
-
             }
             reader.endObject();
             reader.endArray();
 
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e)
+        {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
 
-       /* try {
+        /* try {
             FileReader inputFile = new FileReader(path);
             BufferedReader bufferReader = new BufferedReader(inputFile);
             String line;
@@ -264,7 +248,6 @@ public class Test implements interfaces.controller.ITest {
         } catch (IOException ex) {
             ex.printStackTrace();
         } */
-
         if (fileQuestions.length == 0)
         { // Se não existirem questões, retorna falso
             return false;
@@ -288,8 +271,8 @@ public class Test implements interfaces.controller.ITest {
     }
 
     /**
-     * Override do método por defeito '.toString()' para permitir a definição de
-     * um formato personalizado.
+     * Override do método por defeito {@link #toString()} para permitir a
+     * definição de um formato personalizado.
      *
      * @return resultados do teste em formato String
      */
@@ -297,28 +280,40 @@ public class Test implements interfaces.controller.ITest {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         Gson gson = new Gson();
-        int size = this.organizeData(0);
-        for (int i = 0; i < size; i++)
+        Question[] data = this.organizeData();
+        builder.append("\n----------------");
+        for (Question q : data)
         {
-            builder.append("----------------\nQuestion:\n");
-            builder.append(gson.toJson(questions[i]));
-            builder.append('\n');
+            if (q instanceof QuestionYesNo)
+            {
+                builder.append("\nQuestão de Sim ou Nao:\n");
+                builder.append(gson.toJson(q, QuestionYesNo.class));
+            } else if (q instanceof QuestionMultipleChoice)
+            {
+                builder.append("\nQuestão de Escolha Multipla:\n");
+                builder.append(gson.toJson(q, QuestionMultipleChoice.class));
+            } else if (q instanceof QuestionNumeric)
+            {
+                builder.append("\nQuestão Numerica:\n");
+                builder.append(gson.toJson(q, QuestionNumeric.class));
+            }
+            builder.append("\n----------------");
         }
         return builder.toString();
     }
 
     /**
-     * Procura e devolve a posição de um elemento em {@link Question}.
+     * Procura e devolve a posição de um elemento em {@link #questions}.
      *
      * @param q elemento a ser encontrado
      * @return posição em que se encontra o elemento encontrado ou -1 se não
      * existir
      */
-    public int findQuestion(Question q) {
+    public int findQuestion(IQuestion q) {
         int pos = 0;
         while (pos < questions.length)
-        { // Iterar sobre a estrutura de dados
-            if (questions[pos].equals(q))
+        { // Iterar sobre a estrutura de dados, em valores não nulos
+            if (questions[pos] != null && questions[pos].equals((Question) q))
             { // Se encontrar um objeto igual ao parâmetro, retorna a posição
                 return pos;
             }
@@ -329,44 +324,57 @@ public class Test implements interfaces.controller.ITest {
     }
 
     /**
-     * Elimina elementos vazios entre cada dois elementos consecutivos, a partir
-     * de uma posição inicial. Adicionalmente, retorna o número de elementos não
-     * nulos total.<p>
-     * <b>Nota:</b> Este método não é muito utilizado dentro da classe. No
-     * entanto, pode surgir mais utilidade eventualmente.
+     * Elimina elementos vazios entre cada dois elementos consecutivos em
+     * {@link #questions}.
+     * <p>
+     * Adicionalmente, retorna uma versão organizada, sem elementos nulos e só
+     * com o tamanho necessário, de {@link #questions}.
+     * <p>
+     * <b>Nota:</b> Este método foi adicionado principalmente por conveniência.
+     * Uma outra alternativa seria utilizar como estrutura de dados desta classe
+     * um array de 'tamanho variável'. No entanto, para isso teriam que ser
+     * criados, da mesma forma, outros métodos que fizessem essa mesma gestão.
+     * Logo, decidiu-se continuar com esta abordagem.
      *
-     * @param pos posição inicial
-     * @return total de elementos não nulos
+     * @return estrutura de dados original sem elementos nulos
      */
-    public int organizeData(int pos) {
-        int i = pos, j, count = 0;
-        while (i < questions.length)
-        { // Iterar sobre toda a estrutura de dados
-            if (questions[i] == null)
-            { // Quando encontrar um elemento nulo
+    public Question[] organizeData() {
+        int i = 0, j, k = 0, questionNum = this.numberQuestions();
+        Question[] temp = new Question[questionNum];
+        while (i < questionNum)
+        { // Tendo em conta que os ciclos abaixo irão compactar todas as respostas
+            // não nulas, só será necessário iterar sobre o número dessas respostas
+            while (questions[i] == null)
+            { // Enquanto um elemento encontrado for nulo...
                 j = i;
                 while (j < questions.length - 1 && questions[j] == null)
                 { // Arrasta o elemento seguinte para a posição anterior até 
-                    // que mais nenhum elemento nulo exista
+                    // encontrar um elemento não nulo
                     questions[j] = questions[j + 1];
                     j++;
                 }
-                count++; // Incrementa o contador a cada valor nulo encontrado.
+                if (questions[j - 1].equals(questions[j]))
+                {
+                    questions[j] = null; // O último valor é colocado a null,
+                    // o penúltimo (j - 1) e último (j) elementos se repetem.
+                }
             }
-            i++;
+            temp[k] = questions[i];
+            k++; // Incrementar índice da nova estrutura
+            i++; // Incrementar índice da estrutura original
         }
-        return (i - count) + 1;
+        return temp;
     }
 
     @Override
-    public boolean saveTestResults(String path) throws TestException{
+    public boolean saveTestResults(String path) throws TestException {
         /*
         Falta implementar este método.
         Ter cuidado com o uso da exceção. Como diz no javadoc 
         "Throws:
         TestException - if there is no question at the specified position"
         Neste caso, é igual a como está no método this.getQuestion().
-        */
+         */
         return false;
     }
 }
