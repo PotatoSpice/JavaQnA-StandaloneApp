@@ -10,7 +10,9 @@
 package controller;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import interfaces.controller.ITestStatistics;
 import interfaces.exceptions.TestException;
 import interfaces.models.IQuestion;
@@ -19,10 +21,8 @@ import models.QuestionMultipleChoice;
 import models.QuestionNumeric;
 import models.QuestionYesNo;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 
 /**
  * <b>Esta classe implementa todos os métodos definidos no contrato relativo,
@@ -52,15 +52,15 @@ public class Test implements interfaces.controller.ITest {
             throw new TestException();
         }
         /*
-        Nota sobre implementação: 
-        O enunciado não fala nisto mas seria conveniente que o método não
-        permitisse que fossem introduzidas questões repetidas. Isso fazia-se
-        facilmente com o código abaixo:
-        if (this.findQuestion(q) != -1) {
-            return false;
-            // ou
-            // throw new TestException();
-        }
+         * Nota sobre implementação: 
+         * O enunciado não fala nisto mas seria conveniente que o método não
+         * permitisse que fossem introduzidas questões repetidas. Isso fazia-se
+         * facilmente com o código abaixo:
+         * if (this.findQuestion(q) != -1) {
+         *      return false;
+         *      // ou
+         *      // throw new TestException();
+         * }
          */
         int pos = 0;
         while (pos < questions.length)
@@ -149,19 +149,72 @@ public class Test implements interfaces.controller.ITest {
 
     @Override
     public boolean loadFromJSONFile(String path) throws TestException {
-        Gson gson = new Gson();
-
-        Question[] fileQuestions = null; //gson.fromJson(path, Question[].class);
-
-        QuestionMultipleChoice[] multipleChoice = new QuestionMultipleChoice[50];
-        int counter1 = 0;
-        QuestionNumeric[] questionNumerics = new QuestionNumeric[50];
-        int counter2 = 0;
-        QuestionYesNo[] questionYesNos = new QuestionYesNo[50];
-        int counter3 = 0;
-
+        Gson gson = new Gson(); // Instância para desserialização de JsonElements
+        JsonArray jsonArray; // JSONArray correspondente ao ficheiro
         try
-        {
+        { // Leitura do ficheiro e parse para uma instância de JSONArray
+            FileReader inputFile = new FileReader(path);
+
+            JsonParser parser = new JsonParser();
+            jsonArray = parser.parse(inputFile).getAsJsonArray();
+
+        } catch (FileNotFoundException ex)
+        { // Retorna falso se o ficheiro não existir
+            System.err.println("ERROR:\n"
+                    + "File not found. path: [" + path + "]");
+            return false;
+        }
+
+        if (jsonArray.size() == 0)
+        { // Se não existirem perguntas, retorna falso
+            return false;
+        }
+
+        Question[] fileQuestions
+                = // Armazenamento temporário das perguntas
+                new Question[jsonArray.size()];
+        for (int i = 0; i < jsonArray.size(); i++)
+        { // Iterar sobre todos os elementos do JSONArray
+            // cada elemento do JSONArray será um JSONObject
+            JsonObject obj = jsonArray.get(i).getAsJsonObject();
+
+            String type = obj.get("type").getAsString(); // Obter o tipo da questão
+            Question q;
+            switch (type)
+            { // Dependendo do tipo da Questão, instancia-se uma classe diferente
+                case "MultipleChoice":
+                    // desserialização do JsonObject para uma instância da classe
+                    q = gson.fromJson(obj.get("question"), QuestionMultipleChoice.class);
+                    break;
+                case "YesNo":
+                    // desserialização do JsonObject para uma instância da classe
+                    q = gson.fromJson(obj.get("question"), QuestionYesNo.class);
+                    break;
+                case "Numeric":
+                    // desserialização do JsonObject para uma instância da classe
+                    q = gson.fromJson(obj.get("question"), QuestionNumeric.class);
+                    break;
+                default:
+                    q = null;
+                    break;
+            }
+            if (q == null)
+            { // Se alguma das questões for inválida, lança uma exceção
+                throw new TestException();
+            }
+            fileQuestions[i] = q;
+            // Questão adicionada, prossegue para a próxima posição.
+        }
+
+        for (Question q : fileQuestions)
+        { // Adicionar as questões à estrutura principal
+            addQuestion(q);
+        }
+        return true;
+
+        /*
+        VERSÃO 2 - antiga
+        try {
             FileReader inputFile = new FileReader(path);
             BufferedReader bufferReader = new BufferedReader(inputFile);
 
@@ -171,27 +224,23 @@ public class Test implements interfaces.controller.ITest {
             //Fica aqui ou depois?
             //fileQuestions = gson.fromJson(reader, Question[].class);
 
-            while (reader.hasNext())
-            {
-                if (reader.nextName().equals("type"))
-                {
+            while (reader.hasNext()) {
+                if (reader.nextName().equals("type")) {
                     String type = reader.nextString();
 
-                    if (type.equals("MultipleChoices"))
-                    {
+                    if (type.equals("MultipleChoices")) {
 
                     }
 
-                    if (type.equals("YesNo"))
-                    {
+                    if (type.equals("YesNo")) {
 
                     }
 
-                    if (type.equals("Numeric"))
-                    {
+                    if (type.equals("Numeric")) {
 
                     }
-                    /*reader.beginObject();
+                    /*
+                    reader.beginObject();
                     while(reader.hasNext()){
                         if(reader.nextName().equals("question")){
                             while(reader.hasNext()){
@@ -211,35 +260,28 @@ public class Test implements interfaces.controller.ITest {
                                 if(reader.nextName().equals("correct_answers")){
 
                                 }
-
                             }
                         }
-                    } */
-
+                    } *
                 }
-
             }
             reader.endObject();
             reader.endArray();
-
-        } catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-        /* try {
+         *//* 
+        VERSÃO 1 - antiga
+        try {
             FileReader inputFile = new FileReader(path);
             BufferedReader bufferReader = new BufferedReader(inputFile);
             String line;
             while ((line = bufferReader.readLine()) != null) {
-
                 fileQuestions = gson.fromJson(bufferReader, Question[].class);
                 JsonElement element = gson.fromJson(line, JsonElement.class);
                 JsonObject jsonObj = element.getAsJsonObject();
-
             }
             // Close the buffer reader
             bufferReader.close();
@@ -247,27 +289,8 @@ public class Test implements interfaces.controller.ITest {
             e.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
-        } */
-        if (fileQuestions.length == 0)
-        { // Se não existirem questões, retorna falso
-            return false;
-        }
-
-        for (IQuestion q : fileQuestions)
-        { // Iterar sobre o novo vetor criado a partir do ficheiro JSON
-            /*
-            Nota: como o método 'addQuestion()' já faz o lançamento da exceção
-            'TestException()' quando não existe uma questão na posição em 
-            específico, não é necessário voltar a instânciar e a lançar
-            a mesma exceção.
-             */
-            if (!addQuestion(q))
-            { // Não sendo possível adicionar uma única questão, retorna falso
-                return false;
-            }
-            // Questão adicionada, prossegue para a próxima posição.
-        }
-        return true;
+        } 
+         */
     }
 
     /**
