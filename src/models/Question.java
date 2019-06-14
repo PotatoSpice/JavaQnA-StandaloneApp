@@ -28,7 +28,7 @@ public abstract class Question implements interfaces.models.IQuestion {
 
     private String title;
     private String question_description;
-    private IQuestionMetadata question_metadata;
+    private QuestionMetadata question_metadata = new QuestionMetadata();
     private boolean done = false;
 
     @Override
@@ -66,7 +66,7 @@ public abstract class Question implements interfaces.models.IQuestion {
 
     @Override
     public void setQuestion_metadata(IQuestionMetadata metadata) {
-        this.question_metadata = metadata;
+        this.question_metadata = (QuestionMetadata) metadata;
     }
 
     @Override
@@ -77,8 +77,15 @@ public abstract class Question implements interfaces.models.IQuestion {
     @Override
     public void setDone(boolean done) {
         this.done = done;
+        /* 
+        Sinalizar o tempo de resposta à pergunta.
+        (o tempo de resposta a uma pergunta, então, será o tempo decorrido
+        desde a primeira abertura da pergunta até à última resposta selecionada,
+        pois de cada vez que se altere a resposta dada, irá atualizar o timestamp)
+         */
+        this.question_metadata.setTimestamp_finish(System.currentTimeMillis());
     }
-    
+
     @Override
     abstract public void answer(String user_answer);
 

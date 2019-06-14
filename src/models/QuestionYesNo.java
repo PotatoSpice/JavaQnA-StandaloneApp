@@ -47,11 +47,12 @@ public class QuestionYesNo extends Question implements interfaces.models.IQuesti
     @Override
     public void answer(String user_answer) {
         this.setUser_answer(user_answer);
+        super.setDone(true); // Sinalizar a realização da resposta
     }
 
     @Override
     public boolean evaluateAnswer() {
-        return correct_answer.equals(user_answer);
+        return correct_answer.equalsIgnoreCase(user_answer);
     }
 
 }

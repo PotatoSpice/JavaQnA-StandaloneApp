@@ -48,6 +48,7 @@ public class QuestionNumeric extends Question implements interfaces.models.IQues
     public void answer(String user_answer) {
         try {
             this.setUser_answer(Double.parseDouble(user_answer));
+            this.setDone(true); // Sinalizar a realização da resposta
         } catch (NumberFormatException exc) {
             System.err.println("AVISO (em: " + this.getClass().toString()
                     + " )\n> Resposta terá de ser um número!\n");

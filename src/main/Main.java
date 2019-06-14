@@ -38,15 +38,16 @@ public class Main {
             System.out.println("Início de Teste!");
 
             // Carregar o teste
-            ITest demoTest = new Test();
-            IQuestionYesNo q = new QuestionYesNo();
+            Test demoTest = new Test();
+            QuestionYesNo q = new QuestionYesNo();
             q.setTitle("pergunta sim e nao");
             q.setQuestion_description("descrição asdasdashdaskjdsahdsakd");
             q.setQuestion_metadata(new QuestionMetadata());
             q.setCorrect_answer("no");
-            q.setDone(true);
+            q.setUser_answer("no");
+            //q.setDone(true);
 
-            IQuestionMultipleChoice q2 = new QuestionMultipleChoice();
+            QuestionMultipleChoice q2 = new QuestionMultipleChoice();
             q2.setTitle("pergunta escolha multipla");
             q2.setQuestion_description("descrição asdasdashdaskjdsahdsakd");
             q2.setQuestion_metadata(new QuestionMetadata());
@@ -55,9 +56,10 @@ public class Main {
                 "a", "b", "c", "d"
             });
             q2.setCorrect_answer("a");
-            q2.setDone(true);
+            q2.setUser_answer("b");
+            //q2.setDone(true);
 
-            IQuestionMultipleChoice q3 = new QuestionMultipleChoice();
+            QuestionMultipleChoice q3 = new QuestionMultipleChoice();
             q3.setTitle("pergunta escolha multipla 2");
             q3.setQuestion_description("descrição asdasdashdaskjdsahdsakd");
             q3.setQuestion_metadata(new QuestionMetadata());
@@ -66,14 +68,15 @@ public class Main {
                 "a", "b", "c", "d"
             });
             q3.setCorrect_answer("c");
-            q3.setDone(true);
+            q3.setUser_answer("c");
+            //q3.setDone(true);
 
             System.out.println("Question added: " + demoTest.addQuestion(q));
             System.out.println("Question added: " + demoTest.addQuestion(q2));
             System.out.println("Question added: " + demoTest.addQuestion(q3));
+
+            System.out.println("Correct: " + demoTest.getTestStatistics().correctAnswer());
             
-            System.out.println("All answered: " + demoTest.isComplete());
-            /*
             System.out.println("Number of questions: " + demoTest.numberQuestions());
             System.out.println("teste: " + demoTest.getQuestion(0).getTitle());
             TestStatistics statistics = (TestStatistics) demoTest.getTestStatistics();
@@ -83,7 +86,7 @@ public class Main {
             System.out.println("Incorrect answers %: " + statistics.incorrectAnswerPecentage());
             System.out.println("MeanTime answer: " + statistics.meanTimePerAnswer());
             System.out.println("Standard Deviation: " + statistics.standardDeviationTimePerAnsewer());
-             */
+             
 
             // Executar o teste na camada gráfica
             TestWindow t = new TestWindow();

@@ -58,6 +58,7 @@ public class QuestionMultipleChoice extends Question implements interfaces.model
     @Override
     public void answer(String user_answer) {
         this.setUser_answer(user_answer);
+        super.setDone(true); // Sinalizar a realização da resposta
     }
 
     @Override
