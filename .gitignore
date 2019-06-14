@@ -2,7 +2,8 @@
 /build.xml
 /manifest.mf
 /nbproject/*
+/build
 
-# ignorar os documentos relativos aos recursos
+# ignorar os documentos relativos aos recursos (javadoc e exemplo .json)
 /recursos/docs/*
-/build/
+/dist/
