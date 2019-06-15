@@ -1,5 +1,7 @@
 package interfaces;
 
+import models.Question;
+
 public interface IExtraStatistics {
 
     public double percentagemRespostasNumericasCertas();
@@ -10,5 +12,8 @@ public interface IExtraStatistics {
 
     public double percentagemRespostasMultiplasCertas();
     public double percentagemRespostasMultiplasErradas();
+
+    public int correctAnswer(Question[] question);
+    public int incorrectAnswer(Question[] question);
 
 }
