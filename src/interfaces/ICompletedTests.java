@@ -9,7 +9,6 @@
  */
 package interfaces;
 
-import exceptions.CompletedTestsException;
 import interfaces.controller.ITest;
 
 /**
@@ -33,9 +32,11 @@ public interface ICompletedTests {
      * Guarda todos os {@link interfaces.controller.ITest} contidos na estrutura
      * de dados.
      *
+     * @param path caminho para o ficheiro
+     * @param test 
      * @return true se foi possível realizar a escrita para o ficheiro de todos
      * os {@link interfaces.controller.ITest}, falso no contrário
      */
-    public boolean saveTestsToJSONFile(String path, controller.ITest test);
+    public boolean saveTestsToJSONFile(String path, ITest test);
 
 }

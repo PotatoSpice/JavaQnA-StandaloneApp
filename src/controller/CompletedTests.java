@@ -10,7 +10,6 @@
 package controller;
 
 import com.google.gson.JsonObject;
-import exceptions.CompletedTestsException;
 import interfaces.controller.ITest;
 import interfaces.exceptions.TestException;
 
@@ -57,8 +56,9 @@ public class CompletedTests implements interfaces.ICompletedTests {
     }
 
     @Override
-    public boolean saveTestsToJSONFile(String path, controller.ITest test) {
+    public boolean saveTestsToJSONFile(String path, ITest t) {
 
+        Test test = (Test) t;
         File pathf = new File(path);
 
         JsonObject geral = new JsonObject();
