@@ -138,7 +138,7 @@ public class TestStatistics implements interfaces.controller.ITestStatistics {
         int j = this.incorrectAnswer(); // Buscar o número de respostas corretas
         Question[] result
                 = // Instanciar uma estrutura com o tamanho necessário
-                new Question[j + 1];
+                new Question[j];
 
         j = 0;
         for (Question q : testQuestions)
@@ -157,7 +157,7 @@ public class TestStatistics implements interfaces.controller.ITestStatistics {
         int j = this.correctAnswer(); // Buscar o número de respostas corretas
         Question[] result
                 = // Instanciar uma estrutura com o tamanho necessário
-                new Question[j + 1];
+                new Question[j];
 
         j = 0;
         for (Question q : testQuestions)

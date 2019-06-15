@@ -336,16 +336,47 @@ public class Test implements interfaces.controller.ITest {
     public String toString() {
         try
         { // Testar se existem questões
-            String testString = "";
-
+            StringBuilder builder = new StringBuilder()
+                    .append("[ Teste de Conhecimentos ]")
+                    .append("\nNúmero de Questões: ").append(this.numberQuestions())
+                    .append("\nDetalhes das Questões:").append("\n----------------");
+            
             Question[] data = this.organizeData(); // throws TestException()
-            testString += "\n----------------";
             for (Question q : data)
-            {
-                testString += q.toString();
-                testString += "----------------";
+            { // adicionar os dados das questões
+                builder.append(q.toString());
+                builder.append("----------------");
             }
-            return testString;
+            
+            int corrNum = this.statistics.correctAnswer(), 
+                    incorrNum = this.statistics.incorrectAnswer();
+            builder.append("\n[ Estatísticas do Teste ]\n");
+            
+            builder.append("\n\tNúmero de Respostas Corretas: ").append(corrNum)
+                    .append("\n\tPercentagem: ")
+                    .append(this.statistics.correctAnswerPecentage()).append(" %");
+            if (corrNum != 0) {
+                builder.append("\n\tRespostas Corretas: ");
+                Question[] ca = this.statistics.correctAnswers();
+                for (Question q : ca) {
+                    builder.append("\n\t\t> ").append(q.getTitle());
+                }
+            }
+            builder.append("\n\tNúmero de Respostas Incorretas: ").append(incorrNum)
+                    .append("\n\tPercentagem: ")
+                    .append(this.statistics.incorrectAnswerPecentage()).append(" %");
+            if (incorrNum != 0) {
+                builder.append("\n\tRespostas Incorretas: ");
+                Question[] ia = this.statistics.incorrectAnswers();
+                for (Question q : ia) {
+                    builder.append("\n\t\t> ").append(q.getTitle());
+                }
+            }
+            builder.append("\n\tMédia de Tempo por Resposta: ").append(this.statistics.meanTimePerAnswer())
+                    .append("\n\t\tDesvio Padrão: ").append(this.statistics.standardDeviationTimePerAnsewer());
+                    
+            
+            return builder.toString();
         } catch (TestException ex)
         { // Se não existirem questões, retorna uma string vazia
             return "";
