@@ -14,7 +14,7 @@ import interfaces.controller.ITest;
 /**
  * "Contrato" que especifica quais os métodos que devem estar disponíveis para
  * possibilitar o armazenamento de {@link interfaces.controller.ITest}
- * completados.
+ * completados, numa estrutura de dados compatível.
  */
 public interface ICompletedTests {
 
@@ -26,7 +26,7 @@ public interface ICompletedTests {
      * @return true se o ficheiro foi lido com sucesso e todas os
      * {@link interfaces.controller.ITest} foram carregados, false no contrário
      */
-    public  boolean loadTestsFromJSONFile(String path);
+    public boolean loadTestsFromJSONFile(String path);
 
     /**
      * Guarda todos os {@link interfaces.controller.ITest} contidos na estrutura

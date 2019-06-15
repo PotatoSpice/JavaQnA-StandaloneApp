@@ -27,27 +27,16 @@ import java.util.Date;
  * Contudo, novos métodos adicionados ou alterações pertinentes serão
  * devidamente documentadas.
  * <p>
- * A abordagem aqui seguida passa pela existência de uma estrutura de dados que
- * armazena durante o tempo de execução todos os testes que vão sendo
- * concluidos. Posteriormente, os dados são armazenados num ficheiro JSON para
- * assim garantir a persistência dos dados.
- * <p>
- * NOTA: é possivel verificar que alguns métodos utilizados nesta classe são
- * 'repetidos' da classe 'Test', ou seja, seria possível haver uma forma de
- * reutilizar esses métodos. Uma forma seria através do uso da API
- * 'ContainerOfObjects', no entanto essa abordagem não foi adotada.
+ * A abordagem antiga não era a melhor. Uma nova abordagem será escolhida
+ * eventualmente.
  */
 public class CompletedTests implements interfaces.ICompletedTests {
 
-    private final ITest[] saved_tests;
-    private final int DEFAULT_SIZE = 50;
-
     /**
-     * Construtor para inicialização da estrutura de dados com tamanho inicial
-     * por defeito.
+     * 
      */
     public CompletedTests() {
-        this.saved_tests = new ITest[DEFAULT_SIZE];
+        
     }
 
     @Override
