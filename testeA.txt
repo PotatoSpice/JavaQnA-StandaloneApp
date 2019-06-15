@@ -1,0 +1,44 @@
+
+----------------
+[ Questão Escolha Múltipla ]
+Questão Concluida! : Tempo de Realização: 4 segundos
+	Título: Question 1
+	Descrição: The ability of an object to take on many forms is:
+	-
+	Opções de Resposta: 
+		> Polymorphism
+		> Encapsulation
+		> Design Patter
+		> Does not Exist
+	Resposta Correta: Polymorphism
+	Resposta Utilizador: Encapsulation
+
+[ Questão Escolha Múltipla ]
+Questão Concluida! : Tempo de Realização: 1 segundos
+	Título: Question 2
+	Descrição: The bundling of data with the methods that operate on that data is:
+	-
+	Opções de Resposta: 
+		> Polymorphism
+		> Encapsulation
+		> Design Patter
+		> Does not Exist
+	Resposta Correta: Encapsulation
+	Resposta Utilizador: Encapsulation
+
+[ Questão Sim / Não ]
+Questão Concluida! : Tempo de Realização: 0 segundos
+	Título: Question 3
+	Descrição: Object Oriented Programming is exclusive to the JAVA programming language
+	-
+	Resposta Correta: no
+	Resposta Utilizador: NO
+
+[ Questão Numerica ]
+Questão Concluida! : Tempo de Realização: 3 segundos
+	Título: Question 4
+	Descrição: How many programming languages are taught in Paradigmas de Programação?
+	-
+	Resposta Correta: 1.0
+	Resposta Utilizador: 1.2
+----------------
