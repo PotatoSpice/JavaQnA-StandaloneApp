@@ -31,8 +31,6 @@ public class QuestionMetadata implements interfaces.models.IQuestionMetadata {
 
     }
 
-
-
     @Override
     public long getTimestamp_finish() {
         return questionfinisht;
@@ -41,6 +39,26 @@ public class QuestionMetadata implements interfaces.models.IQuestionMetadata {
     @Override
     public void setTimestamp_finish(long timestamp_finish) {
         this.questionfinisht = timestamp_finish;
+    }
+
+    /**
+     * Partindo do princípio que os valores introduzidos estão em milissegundos.
+     * (Devido à utilização do método 'System.currentTimeMillis()')
+     *
+     * @return cálculo do tempo de resposta à pergunta, segundos
+     */
+    public long getDoneTimeSeconds() {
+        return (questionfinisht - questionstartt) / 1000;
+    }
+
+    /**
+     * Partindo do princípio que os valores introduzidos estão em milissegundos.
+     * (Devido à utilização do método 'System.currentTimeMillis()')
+     *
+     * @return cálculo do tempo de resposta à pergunta, milissegundos
+     */
+    public long getDoneTimeMilliseconds() {
+        return questionfinisht - questionstartt;
     }
 
 }

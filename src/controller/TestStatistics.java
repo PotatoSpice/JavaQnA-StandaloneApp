@@ -41,8 +41,8 @@ public class TestStatistics implements interfaces.controller.ITestStatistics {
             for (Question q : this.testQuestions)
             { // Calcular o somatório dos tempos de resposta
                 QuestionMetadata meta = (QuestionMetadata) q.getQuestion_metadata();
-                qTime // Calcular o tempo gasto na resposta
-                        = (meta.getTimestamp_finish() - meta.getTimestamp_start());
+                meta.getDoneTimeMilliseconds();
+                qTime = meta.getDoneTimeMilliseconds(); // Tempo de resposta
                 totalTimeSum += qTime; // Somar ao tempo total
             }
             mean = (totalTimeSum / testQuestions.length);
@@ -65,10 +65,8 @@ public class TestStatistics implements interfaces.controller.ITestStatistics {
             for (Question q : this.testQuestions)
             { // Calcular o somatório para o cálculo da variância
                 QuestionMetadata meta = (QuestionMetadata) q.getQuestion_metadata();
-                qTime // Calcular o tempo gasto na resposta
-                        = (meta.getTimestamp_finish() - meta.getTimestamp_start())
-                        / 1000; // Colocar tempo em segundos
-
+                qTime = meta.getDoneTimeSeconds(); // Tempo de Resposta, segundos
+                // Média dos tempos está em segundos, logo igual para o tempo
                 varianceSum += Math.pow((qTime - mean), 2);
             }
             variance = varianceSum / testQuestions.length;
