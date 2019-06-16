@@ -36,7 +36,6 @@ public interface ICompletedTests {
      * especificado, ou seja se já existirem testes armazenados, adiciona o
      * teste disponibilizado a esse conjunto de dados.<p>
      * <b>ATENÇÃO:
-     * <p>
      * Este método irá substituir o ficheiro apontado pelo 'path' se o conteúdo
      * não estiver no formato especificado!</b>
      *
