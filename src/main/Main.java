@@ -9,6 +9,7 @@
  */
 package main;
 
+import controller.CompletedTests;
 import controller.Test;
 import interfaces.exceptions.TestException;
 import views.TestWindow;
@@ -93,6 +94,12 @@ public class Main {
             // Obter os resultados do teste
             System.out.println("Teste Efetuado!");
             System.out.println(demoTest.toString());
+            
+            CompletedTests saveTest = new CompletedTests();
+            if (demoTest.isComplete()) {
+                saveTest.saveCompletedTest("testeJson.json", demoTest);
+            }
+            
         } catch (TestException ex)
         {
             System.err.println("Problemas na classe {" + ex.getClass().getName()

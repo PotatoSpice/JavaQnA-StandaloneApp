@@ -9,34 +9,50 @@
  */
 package interfaces;
 
+import com.google.gson.JsonElement;
 import interfaces.controller.ITest;
 
 /**
  * "Contrato" que especifica quais os métodos que devem estar disponíveis para
  * possibilitar o armazenamento de {@link interfaces.controller.ITest}
- * completados, numa estrutura de dados compatível.
+ * completados, num ficheiro JSON.
+ * <b>Nota:</b> Dependência da library gson-2.8.5.
  */
 public interface ICompletedTests {
 
     /**
-     * Carrega todos os {@link interfaces.controller.ITest} até então
-     * concluidos, armazenados num ficheiro JSON.
+     * Carrega todos os {@link interfaces.controller.ITest} armazenados num
+     * ficheiro JSON presente no path disponibilizado.
      *
      * @param path caminho para o ficheiro
-     * @return true se o ficheiro foi lido com sucesso e todas os
-     * {@link interfaces.controller.ITest} foram carregados, false no contrário
+     * @return Instância de JsonElement com os dados do ficheiro, null se não
+     * existirem dados.
      */
-    public boolean loadTestsFromJSONFile(String path);
+    public JsonElement loadTestsFromJSONFile(String path);
 
     /**
-     * Guarda todos os {@link interfaces.controller.ITest} contidos na estrutura
-     * de dados.
+     * Guarda o {@link interfaces.controller.ITest} disponibilizado no ficheiro
+     * JSON especificado. Se já existirem dados válidos no ficheiro JSON
+     * especificado, ou seja se já existirem testes armazenados, adiciona o
+     * teste disponibilizado a esse conjunto de dados.<p>
+     * <b>ATENÇÃO:
+     * <p>
+     * Este método irá substituir o ficheiro apontado pelo 'path' se o conteúdo
+     * não estiver no formato especificado!</b>
      *
      * @param path caminho para o ficheiro
-     * @param test 
-     * @return true se foi possível realizar a escrita para o ficheiro de todos
-     * os {@link interfaces.controller.ITest}, falso no contrário
+     * @param test teste a ser guardado
+     * @return true se o {@link interfaces.controller.ITest} foi guardado, false
+     * no contrário.
      */
-    public boolean saveTestsToJSONFile(String path, ITest test);
+    public boolean saveCompletedTest(String path, ITest test);
 
+    /**
+     * Ordena todos os testes realizados pelo número de respostas corretas e
+     * armazena-os no ficheiro.
+     *
+     * @param path caminho para o ficheiro
+     * @return Intância de JSONElement com os testes ordenados.
+     */
+    public JsonElement orderTestsByCorrectAnswers(String path);
 }
