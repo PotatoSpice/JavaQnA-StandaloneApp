@@ -4,5 +4,5 @@
 /nbproject/*
 /build
 
-# ignorar os documentos .rar
-/recursos/docs/*.rar
+# ignorar os documentos .zip
+/recursos/docs/*.zip
