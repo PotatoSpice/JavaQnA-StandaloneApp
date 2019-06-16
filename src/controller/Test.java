@@ -33,7 +33,7 @@ import java.io.FileReader;
  */
 public class Test implements interfaces.controller.ITest {
 
-    private final Question[] questions;
+    protected final Question[] questions;
     private final int DEFAULT_SIZE = 50;
     private TestStatistics statistics = null;
 
