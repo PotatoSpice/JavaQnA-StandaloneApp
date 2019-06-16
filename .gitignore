@@ -3,7 +3,6 @@
 /manifest.mf
 /nbproject/*
 /build
-/dist/
 
 # ignorar os documentos .rar
-/recursos/docs/*
+/recursos/docs/*.rar

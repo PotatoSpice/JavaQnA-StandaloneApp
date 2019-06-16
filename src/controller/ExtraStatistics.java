@@ -1,3 +1,12 @@
+/*
+ * Nome: José Ribeiro Baltar
+ * Número: 8170212
+ * Turma: Turma 1
+ * 
+ * Nome: Rodrigo Alexandre Ferreira Coelho
+ * Número: 8170282
+ * Turma: Turma 1
+ */
 package controller;
 
 import interfaces.IExtraStatistics;
@@ -10,9 +19,9 @@ public class ExtraStatistics implements IExtraStatistics {
 
     private final Question[] testQuestions;
     private int counternum, counteryesno, countermulti;
-    private Question[] multiquestion;
-    private Question[] yesnoquestion;
-    private Question[] numericquestion;
+    private final Question[] multiquestion;
+    private final Question[] yesnoquestion;
+    private final Question[] numericquestion;
 
 
     /**

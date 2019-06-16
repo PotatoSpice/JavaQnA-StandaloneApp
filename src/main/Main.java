@@ -98,7 +98,7 @@ public class Main {
             Não sei se nos falhou alguma coisa ou se é mesmo por causa do tal
             problema da interface não ter o método definido, por exemplo.
             */
-            demoTest.saveTestResults("testeA.txt");
+            demoTest.saveTestResults("content/results/testeA.txt");
           
             /*
             Demonstração do método de armazenamento dos testes concluidos
@@ -106,7 +106,7 @@ public class Main {
             */
             CompletedTests saveTest = new CompletedTests();
             if (demoTest.isComplete()) {
-                saveTest.saveCompletedTest("testeJson.json", demoTest);
+                saveTest.saveCompletedTest("content/completedTests.json", demoTest);
             }
           
         } catch (TestException ex) {
