@@ -9,6 +9,7 @@
  */
 package main;
 
+import controller.CompletedTests;
 import controller.Test;
 import interfaces.exceptions.TestException;
 import views.TestWindow;
@@ -23,6 +24,7 @@ public class Main {
         Test demoTest = new Test();
 
         /*
+        Exemplo de introdução de questões manualmente:
         try {
             // Carregar o teste
             QuestionYesNo q = new QuestionYesNo();
@@ -97,8 +99,17 @@ public class Main {
             problema da interface não ter o método definido, por exemplo.
             */
             demoTest.saveTestResults("testeA.txt");
-        } catch (TestException ex)
-        {
+          
+            /*
+            Demonstração do método de armazenamento dos testes concluidos
+            num ficheiro json.
+            */
+            CompletedTests saveTest = new CompletedTests();
+            if (demoTest.isComplete()) {
+                saveTest.saveCompletedTest("testeJson.json", demoTest);
+            }
+          
+        } catch (TestException ex) {
             System.err.println("Problemas na classe {" + ex.getClass().getName()
                     + "}\nMensagem: " + ex.getMessage());
         }
