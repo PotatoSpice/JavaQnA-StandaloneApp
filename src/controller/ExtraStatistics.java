@@ -37,8 +37,10 @@ public class ExtraStatistics implements IExtraStatistics {
         counteryesno = 0;
 
         for (Question q : qlist) {
-            //Aqui estava a pensar em dividir os tres tipos de questao em tres arrays diferentes para depois calcular em cada um sem necessitar de
-            //utlizar 6 ciclos for (um para cada)ficando apenas dois (um para tamanho dos arrays, outro para a sua alimentação
+            //Aqui estava a pensar em dividir os tres tipos de questao em tres 
+            //arrays diferentes para depois calcular em cada um sem necessitar de
+            //utlizar 6 ciclos for (um para cada)ficando apenas dois (um para 
+            //tamanho dos arrays, outro para a sua alimentação
 
             if (q instanceof QuestionMultipleChoice)
                 countermulti++;

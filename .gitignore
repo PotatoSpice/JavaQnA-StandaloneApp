@@ -3,6 +3,8 @@
 /manifest.mf
 /nbproject/*
 /build
+/dist
+/test
 
-# ignorar os documentos .zip
-/recursos/docs/*.zip
+# ignorar outros documentos
+*.zip
