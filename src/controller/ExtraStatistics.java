@@ -26,7 +26,7 @@ public class ExtraStatistics implements IExtraStatistics {
 
     /**
      * Construtor com a inicialização de {@link #testQuestions}, alvo de
-     * análise.
+     * análise. Separa os tipos de questão em três arrays diferentes para posterior utilização
      *
      * @param qlist estrutura de dados com as questões para análise estatística
      */
@@ -81,6 +81,10 @@ public class ExtraStatistics implements IExtraStatistics {
 
     }
 
+    /**
+     * Calcula a percentagem de respostas a perguntas do tipo "Numéricas" cuja resposta do utilizador é acertada
+     * @return percentagem de respostas a perguntas do tipo "Numéricas" cuja resposta do utilizador é acertada
+     */
     @Override
     public double percentagemRespostasNumericasCertas() {
         double result = ((double) this.correctAnswer(numericquestion)
@@ -88,6 +92,10 @@ public class ExtraStatistics implements IExtraStatistics {
         return Math.floor(result * 100) / 100;
     }
 
+    /**
+     *  Calcula a percentagem de respostas a perguntas do tipo "Numéricas" cuja resposta do utilizador é incorreta
+     * @return percentagem de respostas a perguntas do tipo "Numéricas" cuja resposta do utilizador é incorreta
+     */
     @Override
     public double percentagemRespostasNumericasErradas() {
         double result = ((double) this.incorrectAnswer(numericquestion)
@@ -95,6 +103,9 @@ public class ExtraStatistics implements IExtraStatistics {
         return Math.floor(result * 100) / 100;
     }
 
+    /** Calcula a percentagem de respostas a perguntas do tipo "Sim ou não" cuja resposta do utilizador é acertada
+     * @return percentagem de respostas a perguntas do tipo "Sim ou não" cuja resposta do utilizador é acertada
+     */
     @Override
     public double percentagemRespostasSimNaoCertas() {
         double result = ((double) this.correctAnswer(yesnoquestion)
@@ -102,6 +113,9 @@ public class ExtraStatistics implements IExtraStatistics {
         return Math.floor(result * 100) / 100;
     }
 
+    /** Calcula a percentagem de respostas a perguntas do tipo "Sim ou não" cuja resposta do utilizador é incorreta
+     * @return percentagem de respostas a perguntas do tipo "Sim ou não" cuja resposta do utilizador é incorreta
+     */
     @Override
     public double percentagemRespostasSimNaosErradas() {
         double result = ((double) this.incorrectAnswer(yesnoquestion)
@@ -109,6 +123,10 @@ public class ExtraStatistics implements IExtraStatistics {
         return Math.floor(result * 100) / 100;
     }
 
+    /**
+     * Calcula a percentagem de respostas a perguntas do tipo "Escolha Multipla" cuja resposta do utilizador é acertada
+     * @return percentagem de respostas a perguntas do tipo "Escolha Multipla" cuja resposta do utilizador é acertada
+     */
     @Override
     public double percentagemRespostasMultiplasCertas() {
         double result = ((double) this.correctAnswer(multiquestion)
@@ -116,6 +134,10 @@ public class ExtraStatistics implements IExtraStatistics {
         return Math.floor(result * 100) / 100;
     }
 
+    /**
+     * Calcula a percentagem de respostas a perguntas do tipo "Escolha Multipla" cuja resposta do utilizador é acertada
+     * @return percentagem de respostas a perguntas do tipo "Escolha Multipla" cuja resposta do utilizador é incorreta
+     */
     @Override
     public double percentagemRespostasMultiplasErradas() {
         double result = ((double) this.incorrectAnswer(multiquestion)
