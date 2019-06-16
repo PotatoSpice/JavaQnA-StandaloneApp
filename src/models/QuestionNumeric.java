@@ -59,4 +59,24 @@ public class QuestionNumeric extends Question implements interfaces.models.IQues
     public boolean evaluateAnswer() {
         return correct_answer == user_answer;
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder()
+                .append("\n[ Questão Numerica ]");
+        if (super.isDone()) {
+            QuestionMetadata meta = (QuestionMetadata) super.getQuestion_metadata();
+            builder.append("\nQuestão Concluida! ")
+                    .append(": Tempo de Realização: ")
+                    .append(Math.round(meta.getDoneTimeSeconds())).append(" segundos");
+        } else {
+            builder.append("\n{ Questão Incompleta! }");
+        }
+        builder.append("\n\tTítulo: ").append(super.getTitle())
+                .append("\n\tDescrição: ").append(super.getQuestion_description());
+        builder.append("\n\t-\n\tResposta Correta: ").append(this.correct_answer)
+                .append("\n\tResposta Utilizador: ").append(this.user_answer)
+                .append('\n');
+        return builder.toString();
+    }
 }

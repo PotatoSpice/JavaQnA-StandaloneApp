@@ -14,10 +14,6 @@ import controller.Test;
 import interfaces.exceptions.TestException;
 import views.TestWindow;
 
-/**
- *
- * @author Asus
- */
 public class Main {
 
     public static void main(String[] args) {
@@ -28,6 +24,7 @@ public class Main {
         Test demoTest = new Test();
 
         /*
+        Exemplo de introdução de questões manualmente:
         try {
             // Carregar o teste
             QuestionYesNo q = new QuestionYesNo();
@@ -95,13 +92,24 @@ public class Main {
             System.out.println("Teste Efetuado!");
             System.out.println(demoTest.toString());
             
+            /*
+            Demonstração do método de armazenamento do teste em ficheiro de texto.
+            O botão 'saveResults' na janela dos resultados não está a funcionar.
+            Não sei se nos falhou alguma coisa ou se é mesmo por causa do tal
+            problema da interface não ter o método definido, por exemplo.
+            */
+            demoTest.saveTestResults("testeA.txt");
+          
+            /*
+            Demonstração do método de armazenamento dos testes concluidos
+            num ficheiro json.
+            */
             CompletedTests saveTest = new CompletedTests();
             if (demoTest.isComplete()) {
                 saveTest.saveCompletedTest("testeJson.json", demoTest);
             }
-            
-        } catch (TestException ex)
-        {
+          
+        } catch (TestException ex) {
             System.err.println("Problemas na classe {" + ex.getClass().getName()
                     + "}\nMensagem: " + ex.getMessage());
         }

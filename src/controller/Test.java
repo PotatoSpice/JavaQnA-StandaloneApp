@@ -16,6 +16,7 @@ import com.google.gson.JsonParser;
 import interfaces.controller.ITestStatistics;
 import interfaces.exceptions.TestException;
 import interfaces.models.IQuestion;
+import java.io.BufferedWriter;
 import models.Question;
 import models.QuestionMultipleChoice;
 import models.QuestionNumeric;
@@ -23,6 +24,8 @@ import models.QuestionYesNo;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * <b>Esta classe implementa todos os métodos definidos no contrato relativo,
@@ -140,11 +143,18 @@ public class Test implements interfaces.controller.ITest {
 
     @Override
     public ITestStatistics getTestStatistics() {
-        if (this.statistics == null)
-        { // Organizar os dados e criar uma instância para estatísticas
-            this.statistics = new TestStatistics(this.organizeData());
+        try
+        { // Testar se existem questões
+            if (this.statistics == null)
+            { // Organizar os dados e criar uma instância para estatísticas
+                this.statistics = new TestStatistics(this.organizeData());
+            }
+            return this.statistics;
+        } catch (TestException ex)
+        { // Se não existirem questões, retorna null
+            System.out.println(this.getClass().getName() + " - Não existem questões.");
+            return null;
         }
-        return this.statistics;
     }
 
     @Override
@@ -293,6 +303,29 @@ public class Test implements interfaces.controller.ITest {
          */
     }
 
+    @Override
+    public boolean saveTestResults(String path) throws TestException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path)))
+        { // Instância para escrita do ficheiro
+            System.out.println("\n\n FICHEIRO ESCRITO\n\n"
+                    + "pat: " + path);
+            String test = this.toString();
+            if (test.isEmpty())
+            { // Se não existirem questões, lança a exceção
+                throw new TestException();
+            }
+            writer.append(test);
+            writer.flush();
+
+        } catch (IOException ex)
+        { // Se não for prossível criar o ficheiro, retorna falso
+            System.err.println("ERROR in file\n"
+                    + "- path: [" + path + "]");
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Override do método por defeito {@link #toString()} para permitir a
      * definição de um formato personalizado.
@@ -301,28 +334,53 @@ public class Test implements interfaces.controller.ITest {
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        Gson gson = new Gson();
-        Question[] data = this.organizeData();
-        builder.append("\n----------------");
-        for (Question q : data)
-        {
-            if (q instanceof QuestionYesNo)
-            {
-                builder.append("\nQuestão de Sim ou Nao:\n");
-                builder.append(gson.toJson(q, QuestionYesNo.class));
-            } else if (q instanceof QuestionMultipleChoice)
-            {
-                builder.append("\nQuestão de Escolha Multipla:\n");
-                builder.append(gson.toJson(q, QuestionMultipleChoice.class));
-            } else if (q instanceof QuestionNumeric)
-            {
-                builder.append("\nQuestão Numerica:\n");
-                builder.append(gson.toJson(q, QuestionNumeric.class));
+        try
+        { // Testar se existem questões
+            StringBuilder builder = new StringBuilder()
+                    .append("[ Teste de Conhecimentos ]")
+                    .append("\nNúmero de Questões: ").append(this.numberQuestions())
+                    .append("\nDetalhes das Questões:").append("\n----------------");
+            
+            Question[] data = this.organizeData(); // throws TestException()
+            for (Question q : data)
+            { // adicionar os dados das questões
+                builder.append(q.toString());
+                builder.append("----------------");
             }
-            builder.append("\n----------------");
+            
+            int corrNum = this.statistics.correctAnswer(), 
+                    incorrNum = this.statistics.incorrectAnswer();
+            builder.append("\n[ Estatísticas do Teste ]\n");
+            
+            builder.append("\n\tNúmero de Respostas Corretas: ").append(corrNum)
+                    .append("\n\tPercentagem: ")
+                    .append(this.statistics.correctAnswerPecentage()).append(" %");
+            if (corrNum != 0) {
+                builder.append("\n\tRespostas Corretas: ");
+                Question[] ca = this.statistics.correctAnswers();
+                for (Question q : ca) {
+                    builder.append("\n\t\t> ").append(q.getTitle());
+                }
+            }
+            builder.append("\n\tNúmero de Respostas Incorretas: ").append(incorrNum)
+                    .append("\n\tPercentagem: ")
+                    .append(this.statistics.incorrectAnswerPecentage()).append(" %");
+            if (incorrNum != 0) {
+                builder.append("\n\tRespostas Incorretas: ");
+                Question[] ia = this.statistics.incorrectAnswers();
+                for (Question q : ia) {
+                    builder.append("\n\t\t> ").append(q.getTitle());
+                }
+            }
+            builder.append("\n\tMédia de Tempo por Resposta: ").append(this.statistics.meanTimePerAnswer())
+                    .append("\n\t\tDesvio Padrão: ").append(this.statistics.standardDeviationTimePerAnsewer());
+                    
+            
+            return builder.toString();
+        } catch (TestException ex)
+        { // Se não existirem questões, retorna uma string vazia
+            return "";
         }
-        return builder.toString();
     }
 
     /**
@@ -353,16 +411,23 @@ public class Test implements interfaces.controller.ITest {
      * Adicionalmente, retorna uma versão organizada, sem elementos nulos e só
      * com o tamanho necessário, de {@link #questions}.
      * <p>
-     * <b>Nota:</b> Este método foi adicionado principalmente por conveniência.
-     * Uma outra alternativa seria utilizar como estrutura de dados desta classe
-     * um array de 'tamanho variável'. No entanto, para isso teriam que ser
-     * criados, da mesma forma, outros métodos que fizessem essa mesma gestão.
-     * Logo, decidiu-se continuar com esta abordagem.
+     * <b>Nota:</b> Este método foi adicionado principalmente por conveniência
+     * (por exemplo, na utilização da classe TestStatistics). Uma outra
+     * alternativa seria utilizar como estrutura de dados desta classe um array
+     * de 'tamanho variável'. No entanto, para isso teriam que ser criados, da
+     * mesma forma, outros métodos que fizessem essa mesma gestão. Logo,
+     * decidiu-se continuar com esta abordagem.
      *
      * @return estrutura de dados original sem elementos nulos
+     * @throws interfaces.exceptions.TestException quando não existem questões
      */
-    public Question[] organizeData() {
+    public Question[] organizeData() throws TestException {
         int i = 0, j, k = 0, questionNum = this.numberQuestions();
+        if (questionNum == 0)
+        { // Se não existirem questões, lança a exceção
+            throw new TestException();
+        }
+
         Question[] temp = new Question[questionNum];
         while (i < questionNum)
         { // Tendo em conta que os ciclos abaixo irão compactar todas as respostas
@@ -387,17 +452,5 @@ public class Test implements interfaces.controller.ITest {
             i++; // Incrementar índice da estrutura original
         }
         return temp;
-    }
-
-    @Override
-    public boolean saveTestResults(String path) throws TestException {
-        /*
-        Falta implementar este método.
-        Ter cuidado com o uso da exceção. Como diz no javadoc 
-        "Throws:
-        TestException - if there is no question at the specified position"
-        Neste caso, é igual a como está no método this.getQuestion().
-         */
-        return false;
     }
 }
