@@ -6,15 +6,12 @@ import models.Question;
 import models.QuestionMultipleChoice;
 
 public class TestMultipleChoices extends Test {
-    private final Question[] questions;
-    private final int DEFAULT_SIZE = 50;
-
     /**
      * Construtor para inicialização de {@link #questions} com tamanho inicial
      * por defeito.
      */
     public TestMultipleChoices() {
-        this.questions = new Question[this.DEFAULT_SIZE];
+        super();
     }
 
     @Override
