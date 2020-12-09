@@ -1,7 +1,7 @@
-# TrabalhoPP
+# Projeto Paradigmas da Programação - 2018/2019
 
-NOTAS SOBRE O PROJETO:<br/>
-- Entrega do trabalho até dia 16/06<br/>
+Aplicação standalone em Java para realização de Testes Académicos com base em dados descritos em ficheiros JSON.
 
-OUTRAS NOTAS:<br/>
-- O projeto foi desenvolvido utilizando o IDE Netbeans. No entanto, só os ficheiros necessários se encontram aqui armazenados, nomeadamente o «source code» e as «libraries» utilizadas.
+### Notas do projeto
+- Entrega do trabalho até dia 16/06
+- O projeto foi desenvolvido utilizando o IDE Netbeans.
